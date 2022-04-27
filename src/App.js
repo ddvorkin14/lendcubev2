@@ -9,6 +9,7 @@ import './App.css';
 
 import Loans from "./pages/Loans";
 import Menu from "./components/Menu";
+import Loan from "./pages/Loan";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Menu/>
         
         <Routes>
+          <Route path="/loans/:id" element={<Loan />} />
           <Route path="/loans" element={<Loans/>} />
           <Route path="/" element={<Loans />} />
         </Routes>

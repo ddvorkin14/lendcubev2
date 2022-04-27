@@ -1,10 +1,16 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Card, Container, Tabs, Tab, Row, Col } from "react-bootstrap";
+import { Card, Container, Row, Col } from "react-bootstrap";
 import DataTable from 'react-data-table-component';
 import Moment from 'moment';
-import { ButtonGroup, Classes, Button } from "@blueprintjs/core";
+import { ButtonGroup, Classes, Button, Breadcrumbs } from "@blueprintjs/core";
 import Config from "../config";
+import { useNavigate } from "react-router-dom";
+import ExpandedComponent from "../components/ExpandedTableArea";
+
+const BREADCRUMBS = [
+  { href: "/loans", icon: "folder-close", text: "Loans" }
+];
 
 const Loans = () => {
   const [data, setData] = useState([]);
@@ -13,6 +19,7 @@ const Loans = () => {
   const [pagination, setPagination] = useState({});
   const [page, setPage] = useState(1);
   const [query, setQuery] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios.get('https://app.lendcube.ca/api/v1/loans?page=' + page + "&search=" + query, Config).then((resp) => {
@@ -34,45 +41,24 @@ const Loans = () => {
     setPage(page - 1);
   }
 
-  const ExpandedComponent = ({ data }) => {
-    return(
-      <div className="pt-2" style={{float:'left'}}>
-        <Tabs
-          defaultActiveKey="address"
-          transition={false}
-          id="noanim-tab-example"
-          className="mb-3"
-        >
-          <Tab eventKey="address" title="Address Details">
-            <div style={{textAlign: 'left', marginLeft: '20px' }}>
-              <h3>Address:</h3>
-              <p>{JSON.stringify(data)}</p>    
-            </div>
-          </Tab>
-          <Tab eventKey="settings" title="Settings">
-            <div style={{textAlign: 'left', marginLeft: '20px' }}>
-              <h3>Configuration: </h3>
-              <p>{JSON.stringify(data)}</p>    
-            </div>
-          </Tab>
-        </Tabs>
-      </div>
-    )
-  }
-
   const columns = [
     { name: 'First Name', selector: row => row.first_name, sortable: true },
     { name: 'Last Name', selector: row => row.last_name, sortable: true },
     { name: 'Email', selector: row => row.customer_email, sortable: true },
     { name: 'Country', selector: row => row.country, sortable: true },
     { name: 'Amount', selector: row => `$${row.amount}`, sortable: true },
-    { name: 'Created', selector: row => `${Moment(row.created_at).format("L LT")}`, sortable: true }
+    { name: 'Frequency', selector: row => row.frequency, sortable: true },
+    { name: 'Created', selector: row => `${Moment(row.created_at).format("L LT")}`, sortable: true },
+    { name: 'Actions', selector: row => <Button minimal={true} icon="eye-open" onClick={() => navigate("/loans/" + row.id) } />, sortable: false }
   ];
+
 
   return(
     <Container className="pt-4 pb-4">
       <Card>
-        <Card.Header align="start" className={loading ? Classes.SKELETON : ''}>Loans</Card.Header>
+        <Card.Header align="start" className={loading ? Classes.SKELETON : ''}>
+          <Breadcrumbs items={BREADCRUMBS} />
+        </Card.Header>
         
         <Card.Body>
           <Row>
@@ -100,7 +86,6 @@ const Loans = () => {
                   <Button className={`${loading ? Classes.SKELETON : ''} mr-2`} disabled={page === 1} onClick={() => prevPage()}>Previous</Button>
                   <Button className={loading ? Classes.SKELETON : ''} disabled={data.length < pagination.per_page} onClick={() => nextPage()}>Next</Button>
                 </ButtonGroup>
-                
               </div>
             </Col>
           </Row>
@@ -113,8 +98,7 @@ const Loans = () => {
               columns={columns}
               data={data}
               selectableRows
-              dense
-              expandableRows
+              // expandableRows
               expandableRowsComponent={ExpandedComponent}
           />
           </div>
