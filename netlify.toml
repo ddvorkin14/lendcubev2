@@ -1,0 +1,5 @@
+[[redirects]]
+  from=https://lendcube.netlify.app/app.lendcube.ca/api/v1/loans
+  to=https://app.lendcube.ca/api/v1/loans
+  status=200
+  force=true
