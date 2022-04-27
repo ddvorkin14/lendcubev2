@@ -98,33 +98,12 @@ const Loans = () => {
         </Card.Body>
         <Card.Body>
 
-          <input type="text" value={query} onChange={(e) => setQuery(e.target.value)} />
+          <input type="text" value={query} onChange={(e) => {
+            setQuery(e.target.value);
+            setPage(1);
+          }} />
         </Card.Body>
         <Card.Body>
-          {/* <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Email</th>
-                <th>Created By</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.length > 0 && data.map((d) => {
-                return(        
-                  <tr>
-                    <td>{d.id}</td>
-                    <td>{d.first_name}</td>
-                    <td>{d.last_name}</td>
-                    <td>{d.customer_email}</td>
-                    <td>{d.created_by.email}</td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </Table> */}
           <DataTable
             columns={columns}
             data={data}
