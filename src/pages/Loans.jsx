@@ -1,8 +1,10 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Card, Container, Table, Button, Tabs, Tab } from "react-bootstrap";
+import { Card, Container, Tabs, Tab, Row, Col } from "react-bootstrap";
 import DataTable from 'react-data-table-component';
 import Moment from 'moment';
+import { ButtonGroup, Classes, Button } from "@blueprintjs/core";
+import Config from "../config";
 
 const Loans = () => {
   const [data, setData] = useState([]);
@@ -12,15 +14,7 @@ const Loans = () => {
   const [query, setQuery] = useState("");
 
   useEffect(() => {
-    var config = {
-      responseType: 'json',
-      format: 'json',
-      auth: {
-        username: 'dvorkin212@gmail.com',
-        password: 'passwordA1'
-      }
-    }
-    axios.get('https://app.lendcube.ca/api/v1/loans?page=' + page + "&search=" + query, config).then((resp) => {
+    axios.get('https://app.lendcube.ca/api/v1/loans?page=' + page + "&search=" + query, Config).then((resp) => {
       setData(resp.data.loans);
       setPagination(resp.data.pagination);
       setLoading(false);
@@ -59,7 +53,6 @@ const Loans = () => {
           </Tab>
         </Tabs>
       </div>
-      
     )
   }
 
@@ -75,43 +68,51 @@ const Loans = () => {
   return(
     <Container className="pt-4 pb-4">
       <Card>
-        {loading && (
-          <p>Loading Data</p>
-        )}
-        <Card.Header align="start">Loans</Card.Header>
+        <Card.Header align="start" className={loading ? Classes.SKELETON : ''}>Loans</Card.Header>
+        
         <Card.Body>
-          <div style={{display: 'flex', float: 'left'}}>
-            <p className="pl-2">Total Records: {pagination?.total_entries}</p>
-          </div>
-          <div style={{display: 'flex', float: 'right'}}>
-            <p className="pr-2">Current Page: {pagination?.current_page}</p>
-          </div>
-        </Card.Body>
-        <Card.Body>
-          <div style={{display: 'flex', float: 'left'}}>
-            <Button disabled={page === 1} onClick={() => prevPage()}>Previous</Button>
-          </div>
-          
-          <div style={{display: 'flex', float: 'right'}}>
-            <Button disabled={data.length < pagination.per_page} onClick={() => nextPage()}>Next</Button>
-          </div>
-        </Card.Body>
-        <Card.Body>
+          <Row>
+            <Col>
+              <div style={{float: 'left', textAlign: 'left'}}>
+                <p className={`${loading ? Classes.SKELETON : ''}`}>
+                  Total Records: {pagination?.total_entries}
+                  <br/>
+                  Current Page: {pagination?.current_page}
+                </p>
+              </div>
+            </Col>
 
-          <input type="text" value={query} onChange={(e) => {
-            setQuery(e.target.value);
-            setPage(1);
-          }} />
+            <Col>
+              <input className={loading ? Classes.SKELETON : ''} type="text" value={query} placeholder="Search...." onChange={(e) => {
+                setQuery(e.target.value);
+                setPage(1);
+              }} />
+            </Col>
+
+            <Col>
+              <div style={{float: 'right'}}>
+                <ButtonGroup minimal={false}>
+                  <Button className={`${loading ? Classes.SKELETON : ''} mr-2`} disabled={page === 1} onClick={() => prevPage()}>Previous</Button>
+                  <Button className={loading ? Classes.SKELETON : ''} disabled={data.length < pagination.per_page} onClick={() => nextPage()}>Next</Button>
+                </ButtonGroup>
+                
+              </div>
+            </Col>
+          </Row>
+          
         </Card.Body>
+
         <Card.Body>
-          <DataTable
-            columns={columns}
-            data={data}
-            selectableRows
-            dense
-            expandableRows
-            expandableRowsComponent={ExpandedComponent}
-        />
+          <div className={loading ? Classes.SKELETON : ''}>
+            <DataTable
+              columns={columns}
+              data={data}
+              selectableRows
+              dense
+              expandableRows
+              expandableRowsComponent={ExpandedComponent}
+          />
+          </div>
         </Card.Body>
       </Card>
     </Container>
