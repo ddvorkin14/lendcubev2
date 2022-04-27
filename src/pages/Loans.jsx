@@ -17,7 +17,7 @@ const Loans = () => {
         password: 'passwordA1'
       }
     }
-    axios.get('https:/app.lendcube.ca/api/v1/loans?page=' + page, config).then((resp) => {
+    axios.get('https://app.lendcube.ca/api/v1/loans?page=' + page, config).then((resp) => {
       setData(resp.data.loans);
       setPagination(resp.data.pagination);
       setLoading(false);
