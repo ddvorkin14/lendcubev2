@@ -9,6 +9,7 @@ import Config from "../config";
 const Loans = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [dataLoading, setDataLoading] = useState(true);
   const [pagination, setPagination] = useState({});
   const [page, setPage] = useState(1);
   const [query, setQuery] = useState("");
@@ -18,15 +19,18 @@ const Loans = () => {
       setData(resp.data.loans);
       setPagination(resp.data.pagination);
       setLoading(false);
+      setDataLoading(false);
     });
     
   }, [page, query]);
 
   const nextPage = () => {
+    setDataLoading(true);
     setPage(page + 1);
   }
 
   const prevPage = () => {
+    setDataLoading(true);
     setPage(page - 1);
   }
 
@@ -74,7 +78,7 @@ const Loans = () => {
           <Row>
             <Col>
               <div style={{float: 'left', textAlign: 'left'}}>
-                <p className={`${loading ? Classes.SKELETON : ''}`}>
+                <p className={`${dataLoading ? Classes.SKELETON : ''}`}>
                   Total Records: {pagination?.total_entries}
                   <br/>
                   Current Page: {pagination?.current_page}
@@ -86,6 +90,7 @@ const Loans = () => {
               <input className={loading ? Classes.SKELETON : ''} type="text" value={query} placeholder="Search...." onChange={(e) => {
                 setQuery(e.target.value);
                 setPage(1);
+                setDataLoading(true);
               }} />
             </Col>
 
@@ -103,7 +108,7 @@ const Loans = () => {
         </Card.Body>
 
         <Card.Body>
-          <div className={loading ? Classes.SKELETON : ''}>
+          <div className={dataLoading ? Classes.SKELETON : ''}>
             <DataTable
               columns={columns}
               data={data}
