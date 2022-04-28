@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Breadcrumbs, Classes } from "@blueprintjs/core";
 import { Card, Col, Container, Row } from "react-bootstrap";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Config from "../config";
 import axios from "axios";
 import moment from "moment";
@@ -16,6 +16,7 @@ const Loan = () => {
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
   const [loan, setLoan] = useState({});
+  const navigate = useNavigate();
   
   const authHeader = {
     headers: {
@@ -24,10 +25,14 @@ const Loan = () => {
   }
 
   useEffect(() => {
-    axios.get('https://app.lendcube.ca/api/v1/loans/' + id, authHeader).then((resp) => {
-      setLoan(resp.data);
-      setLoading(false);
-    });
+    if(localStorage?.token?.length > 5){
+      axios.get('https://app.lendcube.ca/api/v1/loans/' + id, authHeader).then((resp) => {
+        setLoan(resp.data);
+        setLoading(false);
+      });
+    } else {
+      navigate("/login");
+    }
   }, []);
 
   return (

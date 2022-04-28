@@ -29,7 +29,7 @@ const Loans = () => {
   }
 
   useEffect(() => {
-    if(localStorage.token.length > 5){
+    if(localStorage?.token?.length > 5){
       axios.get('https://app.lendcube.ca/api/v1/loans?page=' + page + "&search=" + query, authHeader).then((resp) => {
         setData(resp.data.loans);
         setPagination(resp.data.pagination);
