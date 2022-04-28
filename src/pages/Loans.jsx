@@ -7,6 +7,7 @@ import { ButtonGroup, Classes, Button, Breadcrumbs } from "@blueprintjs/core";
 import Config from "../config";
 import { useNavigate } from "react-router-dom";
 import ExpandedComponent from "../components/ExpandedTableArea";
+import CurrencyFormat from "react-currency-format";
 
 const BREADCRUMBS = [
   { href: "/loans", icon: "folder-close", text: "Loans" }
@@ -21,14 +22,23 @@ const Loans = () => {
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
 
+  const authHeader = {
+    headers: {
+      'Authorization': `Bearer ${localStorage.token}`
+    }
+  }
+
   useEffect(() => {
-    axios.get('https://app.lendcube.ca/api/v1/loans?page=' + page + "&search=" + query, Config).then((resp) => {
-      setData(resp.data.loans);
-      setPagination(resp.data.pagination);
-      setLoading(false);
-      setDataLoading(false);
-    });
-    
+    if(localStorage.token.length > 5){
+      axios.get('http://localhost:5001/api/v1/loans?page=' + page + "&search=" + query, authHeader).then((resp) => {
+        setData(resp.data.loans);
+        setPagination(resp.data.pagination);
+        setLoading(false);
+        setDataLoading(false);
+      });
+    } else {
+      navigate("/login");
+    }
   }, [page, query]);
 
   const nextPage = () => {
@@ -42,14 +52,14 @@ const Loans = () => {
   }
 
   const columns = [
+    { name: '', width: '60px', selector: row => <Button minimal={true} icon="eye-open" onClick={() => navigate("/loans/" + row.id) } />, sortable: false },
     { name: 'First Name', selector: row => row.first_name, sortable: true },
     { name: 'Last Name', selector: row => row.last_name, sortable: true },
-    { name: 'Email', selector: row => row.customer_email, sortable: true },
-    { name: 'Country', selector: row => row.country, sortable: true },
-    { name: 'Amount', selector: row => `$${row.amount}`, sortable: true },
-    { name: 'Frequency', selector: row => row.frequency, sortable: true },
-    { name: 'Created', selector: row => `${Moment(row.created_at).format("L LT")}`, sortable: true },
-    { name: 'Actions', selector: row => <Button minimal={true} icon="eye-open" onClick={() => navigate("/loans/" + row.id) } />, sortable: false }
+    { name: 'Email', width: '250px', selector: row => row.customer_email, sortable: true },
+    { name: 'Country', width: '100px', selector: row => row.country, sortable: true },
+    { name: 'Amount', width: '120px', selector: row => <CurrencyFormat value={row.amount} displayType={'text'} decimalScale="2" fixedDecimalScale={true} thousandSeparator={true} prefix={'$'} />, sortable: false },
+    { name: 'Frequency', width: '110px', selector: row => row.frequency, sortable: true },
+    { name: 'Created', selector: row => `${Moment(row.created_at).format("L LT")}`, sortable: true }
   ];
 
 

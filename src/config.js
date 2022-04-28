@@ -1,6 +1,7 @@
 const Config = {
-  responseType: 'json', format: 'json',
-  auth: { username: 'dvorkin212@gmail.com', password: 'passwordA1' }
+  headers: {
+    'Authorization': `Bearer ${localStorage.token}`
+  }
 }
 
 export default Config;
