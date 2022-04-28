@@ -64,7 +64,7 @@ const Loans = () => {
 
 
   return(
-    <Container className="pt-4 pb-4">
+    <Container className="pt-4 pb-4 loans-container">
       <Card>
         <Card.Header align="start" className={loading ? Classes.SKELETON : ''}>
           <Breadcrumbs items={BREADCRUMBS} />

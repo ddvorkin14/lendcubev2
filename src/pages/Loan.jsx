@@ -36,10 +36,11 @@ const Loan = () => {
   }, []);
 
   return (
-    <Container className="pt-4 pb-4">
+    <Container className="pt-4 pb-4 loanInfo">
       <Card className="boxshadowhover">
         <Card.Header align="start">
-          <Breadcrumbs className={loading ? Classes.SKELETON : ''} items={BREADCRUMBS} />
+          {`#0000${loan?.id}`}
+          {/* <Breadcrumbs className={loading ? Classes.SKELETON : ''} items={BREADCRUMBS} /> */}
         </Card.Header>
         <Card.Body>
           <Row>

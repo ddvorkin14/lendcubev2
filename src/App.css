@@ -69,3 +69,20 @@
 .boxshadowhover:hover {
   box-shadow: 3px 3px 7px 0px silver;
 }
+
+.login-form {
+  width: 400px;
+  margin: 0 auto;
+}
+
+@media only screen and (max-width: 600px) {
+  .login-form {
+    width: 90%
+  }
+  .loans-container {
+    margin-top: 50px;
+  }
+  .loanInfo {
+    margin-top: 30px;
+  }
+}
