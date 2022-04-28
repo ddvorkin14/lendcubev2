@@ -10,8 +10,11 @@ const Login = () => {
   const onSubmit = (event) => {
     event.preventDefault();
     const [email, password] = event.target.elements;
-    
-    axios.post('https://app.lendcube.ca/api/v1/login', { "email": email.value, "password": password.value }).then((resp) => {
+    const headers = {
+      'Access-Control-Allow-Origin' : '*',
+      'Access-Control-Allow-Methods':'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+    }
+    axios.post('https://app.lendcube.ca/api/v1/login', { "email": email.value, "password": password.value, headers: headers }).then((resp) => {
       if(resp.data?.access_token){
         localStorage.token = resp.data?.access_token;
         navigate("/loans")
