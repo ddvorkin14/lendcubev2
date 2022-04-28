@@ -36,7 +36,7 @@ const Menu = () => {
         <Button className={Classes.MINIMAL} icon="inherited-group" text="Customers" onClick={() => routeChange("customers")} />
 
         <NavbarDivider />
-        {localStorage.token.length > 5 ? (
+        {localStorage.token?.length > 5 ? (
           <>
             <Button className={Classes.MINIMAL} icon="user" text="" onClick={() => routeChange("account")}/>
             <Button className={Classes.MINIMAL} icon="log-out" text="" onClick={() => logout()} />
