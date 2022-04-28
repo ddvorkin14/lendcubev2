@@ -17,8 +17,14 @@ const Loan = () => {
   const { id } = useParams();
   const [loan, setLoan] = useState({});
   
+  const authHeader = {
+    headers: {
+      'Authorization': `Bearer ${localStorage.token}`
+    }
+  }
+
   useEffect(() => {
-    axios.get('https://app.lendcube.ca/api/v1/loans/' + id, Config).then((resp) => {
+    axios.get('https://app.lendcube.ca/api/v1/loans/' + id, authHeader).then((resp) => {
       setLoan(resp.data);
       setLoading(false);
     });

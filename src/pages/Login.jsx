@@ -11,7 +11,7 @@ const Login = () => {
     event.preventDefault();
     const [email, password] = event.target.elements;
     
-    axios.post('http://localhost:5001/api/v1/login', { "email": email.value, "password": password.value }).then((resp) => {
+    axios.post('https://app.lendcube.ca/api/v1/login', { "email": email.value, "password": password.value }).then((resp) => {
       if(resp.data?.access_token){
         localStorage.token = resp.data?.access_token;
         navigate("/loans")
