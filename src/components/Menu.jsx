@@ -1,9 +1,7 @@
 import { Button, Navbar, NavbarDivider, NavbarGroup, NavbarHeading, Classes, Alignment } from "@blueprintjs/core";
-import { LogOut } from "@blueprintjs/icons/lib/esm/generated/16px/paths";
 import axios from "axios";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import Config from "../config";
 
 const Menu = () => {
   const navigate = useNavigate();

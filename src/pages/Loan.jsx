@@ -1,16 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Breadcrumbs, Classes } from "@blueprintjs/core";
+import { Classes } from "@blueprintjs/core";
 import { Card, Col, Container, Row } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
-import Config from "../config";
+
 import axios from "axios";
 import moment from "moment";
 import DetailField from "../components/DetailField";
 
-const BREADCRUMBS = [
-  { href: "/loans", icon: "folder-close", text: "Loans" },
-  { icon: "document", text: "Loan" }
-];
 
 const Loan = () => {
   const [loading, setLoading] = useState(true);
@@ -33,6 +29,7 @@ const Loan = () => {
     } else {
       navigate("/login");
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -40,7 +37,6 @@ const Loan = () => {
       <Card className="boxshadowhover">
         <Card.Header align="start">
           {`#0000${loan?.id}`}
-          {/* <Breadcrumbs className={loading ? Classes.SKELETON : ''} items={BREADCRUMBS} /> */}
         </Card.Header>
         <Card.Body>
           <Row>

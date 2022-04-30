@@ -11,6 +11,7 @@ import Loans from "./pages/Loans";
 import Menu from "./components/Menu";
 import Loan from "./pages/Loan";
 import Login from "./pages/Login";
+import NewLoan from "./pages/NewLoan";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/loans/:id" element={<Loan />} />
           <Route path="/loans" element={<Loans/>} />
+          <Route path="/loans/new" element={<NewLoan />} />
           <Route path="/" element={<Loans />} />
         </Routes>
       </div>

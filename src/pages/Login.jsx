@@ -1,11 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
 import axios from "axios";
-import { Col, Container, Row } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { Position, Toaster } from "@blueprintjs/core";
+
+const AppToaster = Toaster.create({
+  className: "recipe-toaster",
+  position: Position.TOP,
+  maxToasts: 2
+});
 
 const Login = () => {
   const navigate = useNavigate();
-  const [errors, setErrors] = useState(null);
 
   const onSubmit = (event) => {
     event.preventDefault();
@@ -14,12 +20,14 @@ const Login = () => {
       'Access-Control-Allow-Origin' : '*',
       'Access-Control-Allow-Methods':'GET,PUT,POST,DELETE,PATCH,OPTIONS'
     }
+
     axios.post('https://app.lendcube.ca/api/v1/login', { "email": email.value, "password": password.value, headers: headers }).then((resp) => {
       if(resp.data?.access_token){
         localStorage.token = resp.data?.access_token;
+        AppToaster.show({ message: "Login successful, welcome " + resp.data?.email, intent: 'success' });
         navigate("/loans")
       } else {
-        setErrors(resp.data.error)
+        AppToaster.show({ message: resp.data.error, intent: 'danger' });
       }
     })
   }
@@ -44,9 +52,6 @@ const Login = () => {
             placeholder="Enter password"
           />
         </div>
-        {errors && (
-          <p>{errors}</p>
-        )}
         
         <div className="d-grid">
           <button type="submit" className="btn btn-primary">
