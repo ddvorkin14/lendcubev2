@@ -5,7 +5,7 @@ import { Col, Row } from "react-bootstrap";
 const DetailField = (props) => {
   return (
     <Row className={props.loading ? Classes.SKELETON : ''}>
-      <Col sm="4" style={{textAlign: 'right'}}>
+      <Col className="field-column">
         <strong>{props.field}: </strong>
       </Col>
       <Col>

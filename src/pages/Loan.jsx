@@ -50,7 +50,7 @@ const Loan = () => {
             <Col className="details-section">
               <h3 className={loading ? Classes.SKELETON : ''}>Details:</h3>
               <Row>
-                <Col>
+                <Col sm={6}>
                   <DetailField loading={loading} field="Customer Email" value={loan.customer_email} />
                   <DetailField loading={loading} field="Full Name/DOB" value={`${loan?.first_name} ${loan?.last_name} - ${moment(loan?.dob).format("LL")}`} />
                   <DetailField loading={loading} field="Phone #" value={loan.customer_phone} />
