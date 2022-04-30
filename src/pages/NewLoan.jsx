@@ -13,11 +13,7 @@ const AppToaster = Toaster.create({
   maxToasts: 2
 });
 
-const authHeader = {
-  headers: {
-    'Authorization': `Bearer ${localStorage.token}`
-  }
-}
+
 
 const NewLoan = () => {
   const [loading, setLoading] = useState(true);
@@ -28,6 +24,10 @@ const NewLoan = () => {
     frequency: 'Monthly', service_use: 'Personal',
     country: 'Canada', created_by_id: allPossibleUsers.length > 0 ? allPossibleUsers[0] : ''
   });
+  
+  const authHeader = {
+    headers: { 'Authorization': `Bearer ${localStorage.token}` }
+  }
 
   useEffect(() => {
     if(localStorage?.token?.length > 10){
@@ -35,7 +35,7 @@ const NewLoan = () => {
         setAllPossibleUsers(resp.data.users);
         setLoading(false)
       }).catch((e) => {
-        navigate("/login");
+        AppToaster.show({ message: e, intent: 'danger'});
       });
     } else {
       navigate("/login");
