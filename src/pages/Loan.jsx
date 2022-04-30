@@ -25,6 +25,8 @@ const Loan = () => {
       axios.get('https://app.lendcube.ca/api/v1/loans/' + id, authHeader).then((resp) => {
         setLoan(resp.data);
         setLoading(false);
+      }).catch((e) => {
+        navigate("/login");
       });
     } else {
       navigate("/login");
@@ -35,7 +37,7 @@ const Loan = () => {
   return (
     <Container className="pt-4 pb-4 loanInfo">
       <Card className="boxshadowhover">
-        <Card.Header align="start">
+        <Card.Header align="start" className={`${loading ? Classes.SKELETON : ''}`}>
           {`#0000${loan?.id}`}
         </Card.Header>
         <Card.Body>
