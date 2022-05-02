@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Classes } from "@blueprintjs/core";
+import { Classes, Button } from "@blueprintjs/core";
 import { Card, Col, Container, Row } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -22,7 +22,7 @@ const Loan = () => {
 
   useEffect(() => {
     if(localStorage?.token?.length > 5){
-      axios.get('https://app.lendcube.ca/api/v1/loans/' + id, authHeader).then((resp) => {
+      axios.get(process.env.REACT_APP_API_URL + 'loans/' + id, authHeader).then((resp) => {
         setLoan(resp.data);
         setLoading(false);
       }).catch((e) => {
@@ -37,8 +37,13 @@ const Loan = () => {
   return (
     <Container className="pt-4 pb-4 loanInfo">
       <Card className="boxshadowhover">
-        <Card.Header align="start" className={`${loading ? Classes.SKELETON : ''}`}>
-          {`#0000${loan?.id}`}
+        <Card.Header align="start" className={`${loading ? Classes.SKELETON : ''}`} style={{height: 48}}>
+          <div style={{float: 'left'}}>
+            {`#0000${loan?.id}`}
+          </div>
+          <div style={{float: 'right'}}>
+            <Button intent="success" onClick={() => navigate(`/loans/${loan?.id}/bankdetails`) }>Add Bank Details</Button>
+          </div>
         </Card.Header>
         <Card.Body>
           <Row>
@@ -75,7 +80,7 @@ const Loan = () => {
           <br/>
 
           <Row>
-            <Col className="details-section">
+            <Col lg={8} className="details-section">
               <h4 className={loading ? Classes.SKELETON : ''}>Financial Details: </h4>
               <p className={loading ? Classes.SKELETON : ''}>
                 <strong>Institution #: </strong>{loan?.financial_institution_number}

@@ -3,9 +3,8 @@ import React, { useEffect, useState } from "react";
 import { Card, Container, Row, Col } from "react-bootstrap";
 import DataTable from 'react-data-table-component';
 import Moment from 'moment';
-import { ButtonGroup, Classes, Button, Breadcrumbs } from "@blueprintjs/core";
+import { Classes, Button, Breadcrumbs } from "@blueprintjs/core";
 import { useNavigate } from "react-router-dom";
-import ExpandedComponent from "../components/ExpandedTableArea";
 import CurrencyFormat from "react-currency-format";
 
 const BREADCRUMBS = [
@@ -27,7 +26,7 @@ const Loans = () => {
 
   useEffect(() => {
     if(localStorage?.token?.length > 10){
-      axios.get('https://app.lendcube.ca/api/v1/loans?search=' + query, authHeader).then((resp) => {
+      axios.get(process.env.REACT_APP_API_URL + 'loans?search=' + query, authHeader).then((resp) => {
         setData(resp.data.loans);
         setLoading(false);
         setDataLoading(false);
@@ -85,8 +84,6 @@ const Loans = () => {
               data={data}
               selectableRows
               pagination
-              // expandableRows
-              expandableRowsComponent={ExpandedComponent}
           />
           </div>
         </Card.Body>

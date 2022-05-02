@@ -4,7 +4,7 @@ import { Button, Classes, Divider, FormGroup, InputGroup, Position, Toast, Toast
 import { DateInput } from "@blueprintjs/datetime";
 import Checklist from "../components/Checklist";
 import moment from "moment";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const AppToaster = Toaster.create({
@@ -13,12 +13,12 @@ const AppToaster = Toaster.create({
   maxToasts: 2
 });
 
-
-
 const NewLoan = () => {
   const [loading, setLoading] = useState(true);
   const [allPossibleUsers, setAllPossibleUsers] = useState([]);
   const navigate = useNavigate();
+  
+  // eslint-disable-next-line
   const [newLoanErrors, setNewLoanErrors] = useState([]);
   const [newLoan, setNewLoan] = useState({
     frequency: 'Monthly', service_use: 'Personal',
@@ -31,7 +31,7 @@ const NewLoan = () => {
 
   useEffect(() => {
     if(localStorage?.token?.length > 10){
-      axios.get('https://app.lendcube.ca/api/v1/users', authHeader).then((resp) => {
+      axios.get(process.env.REACT_APP_API_URL + 'users', authHeader).then((resp) => {
         setAllPossibleUsers(resp.data.users);
         setLoading(false)
       }).catch((e) => {
@@ -40,6 +40,7 @@ const NewLoan = () => {
     } else {
       navigate("/login");
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onChange = (e) => {
@@ -86,7 +87,7 @@ const NewLoan = () => {
 
   const saveLoan = () => {
     if(allFieldsValid()){
-      axios.post("https://app.lendcube.ca/api/v1/loans", { new_loan: newLoan }).then((resp) => {
+      axios.post(process.env.REACT_APP_API_URL + "loans", { new_loan: newLoan }, authHeader).then((resp) => {
         if(!!resp.data.errors){
           Object.keys(resp.data.errors).map((key) => {
             return AppToaster.show({ message: `Loan did not save due to: ${key.replace("_", " ") + ": " + resp.data.errors[key] }`, intent: 'danger' });

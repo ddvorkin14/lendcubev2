@@ -15,7 +15,7 @@ const Menu = () => {
   }
 
   const logout = () => {
-    axios.delete("https://app.lendcube.ca/api/v1/login", authHeader).then((resp) => {
+    axios.delete(process.env.REACT_APP_API_URL + "login", authHeader).then((resp) => {
       if(resp.data.success){
         localStorage.token = null;
         navigate("/login");

@@ -20,8 +20,8 @@ const Login = () => {
       'Access-Control-Allow-Origin' : '*',
       'Access-Control-Allow-Methods':'GET,PUT,POST,DELETE,PATCH,OPTIONS'
     }
-
-    axios.post('https://app.lendcube.ca/api/v1/login', { "email": email.value, "password": password.value, headers: headers }).then((resp) => {
+    
+    axios.post(process.env.REACT_APP_API_URL + 'login', { "email": email.value, "password": password.value, headers: headers }).then((resp) => {
       if(resp.data?.access_token){
         localStorage.token = resp.data?.access_token;
         AppToaster.show({ message: "Login successful, welcome " + resp.data?.email, intent: 'success' });
