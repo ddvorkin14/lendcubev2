@@ -1,11 +1,12 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Card, Container, Row, Col } from "react-bootstrap";
+import { Card, Row, Col } from "react-bootstrap";
 import DataTable from 'react-data-table-component';
 import Moment from 'moment';
-import { Classes, Button, Breadcrumbs } from "@blueprintjs/core";
+import { Classes, Button } from "@blueprintjs/core";
 import { useNavigate } from "react-router-dom";
 import CurrencyFormat from "react-currency-format";
+import Layout from "../components/Layout";
 
 const BREADCRUMBS = [
   { href: "/loans", icon: "folder-close", text: "Loans" }
@@ -48,34 +49,28 @@ const Loans = () => {
     { name: 'Last Name', selector: row => row.last_name, sortable: true },
     { name: 'Email', width: '250px', selector: row => row.customer_email, sortable: true },
     { name: 'Country', width: '100px', selector: row => row.country, sortable: true },
-    { name: 'Amount', width: '120px', selector: row => <CurrencyFormat value={row.amount} displayType={'text'} decimalScale="2" fixedDecimalScale={true} thousandSeparator={true} prefix={'$'} />, sortable: false },
+    { name: 'Amount', width: '120px', selector: row => <CurrencyFormat value={row.amount} displayType={'text'} decimalScale={2} fixedDecimalScale={true} thousandSeparator={true} prefix={'$'} />, sortable: false },
     { name: 'Frequency', width: '110px', selector: row => row.frequency, sortable: true },
     { name: 'Created', width: '170px', selector: row => `${Moment(row.created_at).format("L LT")}`, sortable: true }
   ];
 
+  const layoutActions = [
+    { id: 1, intent: 'success', label: 'Create New Loan', func: () => navigate("/loans/new")}
+  ]
 
   return(
-    <Container className="pt-4 pb-4 loans-container">
-      <Card>
-        <Card.Header align="start" className={loading ? Classes.SKELETON : ''} style={{height: 48}}>
-          <div style={{float: 'left'}}>
-            <Breadcrumbs items={BREADCRUMBS} />
-          </div>
-          <div style={{float: 'right'}}>
-            <Button intent="success" onClick={() => navigate("/loans/new") }>Create New Loan</Button>
-          </div>
-        </Card.Header>
-        
-        <Card.Body>
-          <Row>
-            <Col lg={4}>
-              <input style={{width: '100%'}} type="search" className={loading ? Classes.SKELETON : ''} value={query} placeholder="Search for a Loan...." onChange={(e) => {
-                setQuery(e.target.value);
-                setDataLoading(true);
-              }} />
-            </Col>
-          </Row>
-        </Card.Body>
+    <Layout 
+      showBreadcrumbs={true} 
+      breadcrumbs={BREADCRUMBS}
+      actions={layoutActions}>
+        <Row>
+          <Col lg={4}>
+            <input style={{width: '100%'}} type="search" className={loading ? Classes.SKELETON : ''} value={query} placeholder="Search for a Loan...." onChange={(e) => {
+              setQuery(e.target.value);
+              setDataLoading(true);
+            }} />
+          </Col>
+        </Row>
 
         <Card.Body>
           <div className={dataLoading ? Classes.SKELETON : ''}>
@@ -84,11 +79,10 @@ const Loans = () => {
               data={data}
               selectableRows
               pagination
-          />
+            />
           </div>
         </Card.Body>
-      </Card>
-    </Container>
+    </Layout>
   )
 };
 

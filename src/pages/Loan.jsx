@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Classes, Button } from "@blueprintjs/core";
+import { Classes, Button, Divider } from "@blueprintjs/core";
 import { Card, Col, Container, Row } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
+// import { init } from "lendcube-zumconnect";
 
 import axios from "axios";
 import moment from "moment";
 import DetailField from "../components/DetailField";
-
+import LoanPreview from "../components/LoanPreview";
 
 const Loan = () => {
   const [loading, setLoading] = useState(true);
@@ -34,6 +35,16 @@ const Loan = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const setNewPlan = (planId) => {
+    axios.post(process.env.REACT_APP_API_URL + "loans/" + id + "/set_new_plan", {rule_id: planId}, authHeader).then((resp) => {
+      setLoan(resp.data.loan);
+    });
+  }
+
+  const zumConnect = () => {
+
+  }
+
   return (
     <Container className="pt-4 pb-4 loanInfo">
       <Card className="boxshadowhover">
@@ -43,6 +54,8 @@ const Loan = () => {
           </div>
           <div style={{float: 'right'}}>
             <Button intent="success" onClick={() => navigate(`/loans/${loan?.id}/bankdetails`) }>Add Bank Details</Button>
+            <Button intent="default" onClick={() => navigate(`/loans/${loan?.id}/edit`) } style={{marginLeft: 10}}>Edit Loan</Button>
+            <Button intent="warning" onClick={() => zumConnect()} style={{marginLeft: 10}}>Zum Connect</Button>
           </div>
         </Card.Header>
         <Card.Body>
@@ -55,14 +68,13 @@ const Loan = () => {
               </div>
             </Col>
             <Col className="details-section">
-              <h3 className={loading ? Classes.SKELETON : ''}>Details:</h3>
-              <Row>
+              <Row style={{marginTop: 20}}>
                 <Col sm={6}>
                   <DetailField loading={loading} field="Customer Email" value={loan.customer_email} />
                   <DetailField loading={loading} field="Full Name/DOB" value={`${loan?.first_name} ${loan?.last_name} - ${moment(loan?.dob).format("LL")}`} />
                   <DetailField loading={loading} field="Phone #" value={loan.customer_phone} />
                   <DetailField loading={loading} field="Service Use" value={loan.service_use} />
-                  <DetailField loading={loading} field="Created" value={moment(loan?.created_at).format("LLL")} />
+                  <DetailField loading={loading} field="Start Date" value={moment(loan?.start_date).format("LL")} />
                   <DetailField loading={loading} field="Created By" value={loan.created_by?.email} />
                 </Col>
                 <Col>
@@ -108,6 +120,13 @@ const Loan = () => {
 
           <br/>
 
+        </Card.Body>
+      </Card>
+      <Divider/>
+      <Card className="boxshadowhover">
+        <Card.Header>Loan Preview</Card.Header>
+        <Card.Body>
+          <LoanPreview loading={loading} id={id} setNewPlan={setNewPlan}/>
         </Card.Body>
       </Card>
     </Container>

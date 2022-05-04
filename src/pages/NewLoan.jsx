@@ -4,7 +4,7 @@ import { Button, Classes, Divider, FormGroup, InputGroup, Position, Toast, Toast
 import { DateInput } from "@blueprintjs/datetime";
 import Checklist from "../components/Checklist";
 import moment from "moment";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
 const AppToaster = Toaster.create({
@@ -13,10 +13,11 @@ const AppToaster = Toaster.create({
   maxToasts: 2
 });
 
-const NewLoan = () => {
+const NewLoan = (props) => {
   const [loading, setLoading] = useState(true);
   const [allPossibleUsers, setAllPossibleUsers] = useState([]);
   const navigate = useNavigate();
+  const { id } = useParams();
   
   // eslint-disable-next-line
   const [newLoanErrors, setNewLoanErrors] = useState([]);
@@ -37,6 +38,14 @@ const NewLoan = () => {
       }).catch((e) => {
         AppToaster.show({ message: e, intent: 'danger'});
       });
+
+      if(props.edit){
+        setLoading(true)
+        axios.get(process.env.REACT_APP_API_URL + "loans/" + id, authHeader).then((resp) => {
+          setNewLoan(resp.data);
+          setLoading(false)
+        })
+      }
     } else {
       navigate("/login");
     }
@@ -102,6 +111,23 @@ const NewLoan = () => {
     }
   }
 
+  const updateLoan = () => {
+    if(allFieldsValid()){
+      axios.patch(process.env.REACT_APP_API_URL + "loans/" + id, { new_loan: newLoan }, authHeader).then((resp) => {
+        if(!!resp.data.errors){
+          Object.keys(resp.data.errors).map((key) => {
+            return AppToaster.show({ message: `Loan did not save due to: ${key.replace("_", " ") + ": " + resp.data.errors[key] }`, intent: 'danger' });
+          })
+        } else {
+          AppToaster.show({ message: `Loan has been successfully updated.`, intent: 'success' });
+          navigate("/loans/" + resp.data.loan.id);
+        }
+      })
+    } else {
+      AppToaster.show({ message: 'Loan cannot be saved due to invalid field data. Please refer to the checklist and try again.', intent: 'danger' });
+    }
+  }
+
   const fields = [
     { id: 1, label: 'First Name', field: 'first_name', tabIndex: 1, required: true, type: 'text' },
     { id: 2, label: 'Last Name', field: 'last_name', tabIndex: 2, required: true, type: 'text' },
@@ -160,7 +186,7 @@ const NewLoan = () => {
       )}
       <Card>
         <Card.Header align="start" className={loading ? Classes.SKELETON : ''}>
-          New Loan
+          {props.edit ? 'Edit' : 'New'} Loan
         </Card.Header>
         <Card.Body>
           <Row style={{textAlign: 'left'}}>
@@ -207,13 +233,13 @@ const NewLoan = () => {
                               labelFor="text-input"
                               labelInfo={input.required ? <span style={{color: 'red'}}>*</span> : ''}>
                                 <DateInput 
-                                  {...getMomentFormatter("LL")} 
+                                  {...getMomentFormatter("LTS")} 
                                   locale="en" 
                                   placeholder={input.label} 
                                   fill={true} 
                                   name={input.field} 
                                   tabIndex={input.tabIndex}
-                                  value={newLoan[input.field]}
+                                  value={moment(newLoan[input.field]).format("LTS")}
                                   onChange={(selectedDate) => setNewLoan({...newLoan, [input.field]: selectedDate })}
                                   showActionsBar={true} />
                             </FormGroup>
@@ -248,7 +274,11 @@ const NewLoan = () => {
           <div style={{float: 'right'}}>
             <Button icon={"undo"} intent="default" style={{marginRight: 5}} onClick={() => navigate("/loans") }>Cancel</Button>
             <Button icon={"reset"} intent="warning" style={{marginRight: 5}} onClick={() => resetLoan() }>Reset Loan</Button>
-            <Button icon={"saved"} intent="success" onClick={() => saveLoan()}>Create Loan</Button>
+            {props.edit ? (
+              <Button icon={"saved"} intent="success" onClick={() => updateLoan()}>Update Loan</Button>
+            ) : (
+              <Button icon={"saved"} intent="success" onClick={() => saveLoan()}>Create Loan</Button>
+            )}
           </div>
         </Card.Footer>
       </Card>

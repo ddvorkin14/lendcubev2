@@ -31,7 +31,8 @@ const Menu = () => {
       
       <NavbarGroup align={Alignment.RIGHT}>  
         <Button className={Classes.MINIMAL} icon="home" text="Loans" onClick={() => routeChange("loans")} />
-        <Button className={Classes.MINIMAL} icon="inherited-group" text="Customers" onClick={() => routeChange("customers")} />
+        <Button className={Classes.MINIMAL} icon="inherited-group" text="Users" onClick={() => routeChange("users")} />
+        <Button className={Classes.MINIMAL} icon="shop" text="Stores" onClick={() => routeChange("stores")} />
 
         <NavbarDivider />
         {localStorage?.token?.length > 5 ? (

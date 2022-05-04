@@ -6088,6 +6088,11 @@ language-tags@^1.0.5:
   dependencies:
     language-subtag-registry "~0.3.2"
 
+lendcube-zumconnect@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/lendcube-zumconnect/-/lendcube-zumconnect-1.0.0.tgz#0aa6c1c508036b49d7a80389cfe3a9ed917d62e4"
+  integrity sha512-Hai/AHebeGvsMAKwIKQ4x1gyJne5kxvXtEAD2w/2Hj32G/QOHT1BzL0KKukZqpx28q5F+Ev3CwtL4J9Hy6vUfQ==
+
 leven@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/leven/-/leven-3.1.0.tgz#77891de834064cccba82ae7842bb6b14a13ed7f2"
