@@ -44,6 +44,22 @@ const Stores = () => {
     });
   }, []);
 
+  useEffect(() => {
+    console.log("Store Data Users: ", storeData?.users);
+  }, [storeData?.users])
+
+  const updateStoreUsers = () => {
+    axios.post(process.env.REACT_APP_API_URL + "stores/" + storeData?.id + "/manage_users", { users: storeData?.users }, authHeader).then((resp) => {
+      setDialogOpen(false);
+      if(resp.data.code === 'USERS_ADDED_SUCCESSFULLY'){
+        setStoreData({...storeData, users: resp.data.users });
+        AppToaster.show({ message: 'Users were successfully added to the store.', intent: 'success' });
+      } else {
+        AppToaster.show({ message: 'Something went wrong', intent: 'danger' });
+      }
+    })
+  }
+
   const layoutActions = [
     { id: 1, intent: 'success', label: 'Create New Store', func: () => navigate("/stores/new")}
   ]
@@ -74,9 +90,9 @@ const Stores = () => {
         text={u.email}
         shouldDismissPopover={true}
         onClick={() => {
-          storeData.users.push(u);
-          setAllUsers(allUsers.filter(u => !storeData.users.map(si => si.id).includes(u.id)));
-          console.log("Store Users Selected: ", storeData.users);
+          if(!storeData?.users.map(u => u.email).includes(u.email)){
+            setStoreData({...storeData, users: [...storeData.users, u]});
+          }
         }}
       />
     )
@@ -118,17 +134,19 @@ const Stores = () => {
                 <MultiSelect 
                   popoverProps={{ minimal: true }} 
                   noResults={<MenuItem disabled={true} text="No results." />}
-                  items={allUsers?.filter((u) => !storeData.users?.map(u => u.id)?.includes(u.id) )} 
+                  items={allUsers?.map(u => u)} 
                   itemRenderer={(u) => multiSelectItemRenderer(u)} 
                   tagRenderer={(u) => u.email}
+                  onItemSelect={(tag) => {
+                    console.log("Tag Selected: ", tag);
+                  }}
                   tagInputProps={{
                     onRemove: (tag) => {
                       setStoreData({...storeData, users: storeData.users.filter(u => u.email !== tag) });
-                      allUsers.push({id: 1, email: tag})
-                      console.log("Store Users Selected: ", storeData.users);
                     }
                   }}
                   selectedItems={storeData.users} />
+                  <Button onClick={() => updateStoreUsers()} style={{marginLeft: 10}}>Update Store</Button>
               </Col>
             </Row>
           </Dialog>
