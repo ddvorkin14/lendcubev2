@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Classes, Button, Divider } from "@blueprintjs/core";
+import { Classes, Button, Divider, Dialog } from "@blueprintjs/core";
 import { Card, Col, Container, Row } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 // import { init } from "lendcube-zumconnect";
@@ -14,6 +14,7 @@ const Loan = () => {
   const { id } = useParams();
   const [loan, setLoan] = useState({});
   const navigate = useNavigate();
+  const [showZumConnect, setShowZumConnect] = useState(false);
   
   const authHeader = {
     headers: {
@@ -32,6 +33,10 @@ const Loan = () => {
     } else {
       navigate("/login");
     }
+
+    window.addEventListener('message', function(e) {
+      console.log(e.data);
+    });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -42,7 +47,7 @@ const Loan = () => {
   }
 
   const zumConnect = () => {
-
+    setShowZumConnect(true);
   }
 
   return (
@@ -129,6 +134,10 @@ const Loan = () => {
           <LoanPreview loading={loading} id={id} setNewPlan={setNewPlan}/>
         </Card.Body>
       </Card>
+      
+      <Dialog title="ZumConnect" isCloseButtonShown={true} onClose={() => setShowZumConnect(false)} usePortal={true} icon={"shop"} isOpen={showZumConnect} style={{width: 600, height: 700}}>
+        <iframe title="zum-connect" src={`https://connect.zumrails.com/connect-adduser/01b19701-b46f-4a00-9f03-0acf7af151e2`} style={{width: '100%', height: '100%'}} />
+      </Dialog>
     </Container>
   )
 }
