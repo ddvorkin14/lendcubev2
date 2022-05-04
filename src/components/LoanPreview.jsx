@@ -64,7 +64,7 @@ const LoanPreview = (props) => {
                 <tr>
                   <th>Date</th>
                   <th>Principal $</th>
-                  <th>Interest %</th>
+                  <th>Interest $</th>
                   <th>Total Payment</th>
                   <th>Remaining Balance</th>
                 </tr>
@@ -75,7 +75,7 @@ const LoanPreview = (props) => {
                     <tr>
                       <td>{moment(balance['date']).format("LLL")}</td>
                       <td>{formatMoney(balance['principal_amount'])}</td>
-                      <td>{balance['interest_amount']} %</td>
+                      <td>{formatMoney(balance['total_payment'] - balance['principal_amount'])}</td>
                       <td>{formatMoney(balance['total_payment'])}</td>
                       <td>{formatMoney(balance['remaining_balance'] > 0 ? balance['remaining_balance'] : 0)}</td>
                     </tr>

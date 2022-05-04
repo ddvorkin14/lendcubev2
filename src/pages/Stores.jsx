@@ -27,6 +27,7 @@ const Stores = () => {
   const navigate = useNavigate();
   const [stores, setStores] = useState([]);
   const [storeData, setStoreData] = useState({});
+  
   const [loading, setLoading] = useState(true)
   const [dialogOpen, setDialogOpen] = useState(false);
   const [allUsers, setAllUsers] = useState([]);
