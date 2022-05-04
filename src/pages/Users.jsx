@@ -7,6 +7,7 @@ import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
 import DetailField from "../components/DetailField";
 import Layout from "../components/Layout";
+import moment from "moment";
 
 const BREADCRUMBS = [
   { href: "/users", icon: "folder-close", text: "Users" }
@@ -34,12 +35,12 @@ const Users = () => {
   const navigate = useNavigate();
 
   const formatMoney = (loans) => {
-    const amount = loans.map(d => d.amount).length > 0 ? loans.map(d => d.amount)?.reduce((a, b) => a + b) : 0;
+    const amount = loans?.map(d => d.amount)?.length > 0 ? loans?.map(d => d.amount)?.reduce((a, b) => a + b) : 0;
     
     return(
       <div style={{display: 'flex'}}>
         <CurrencyFormat value={amount} displayType={'text'} decimalScale="2" fixedDecimalScale={true} thousandSeparator={true} prefix={'$'} />
-        <span style={{marginLeft: 5}}> - ({loans.length})</span>
+        <span style={{marginLeft: 5}}> - ({loans?.length})</span>
       </div> 
     )
   }
@@ -56,11 +57,11 @@ const Users = () => {
 
   const columns = [
     { name: '', width: '60px', selector: row => <Button minimal={true} icon="eye-open" onClick={() => getUser(row.id) } />, sortable: false },
-    { name: 'ID', width: '100px', selector: row => `${row.id}`, sortable: true },
-    { name: 'Email', selector: row => row.email, sortable: true },
-    { name: 'Total Loans', selector: row => formatMoney(row.loans), sortable: false },
-    { name: 'Stores', selector: row => row.stores.map(s => s.name).join(", "), sortable: false },
-    { name: 'Created At', selector: row => row.created_at, sortable: true }
+    { name: 'ID', width: '80px', selector: row => `${row.id}`, sortable: true },
+    { name: 'Email', width: '200px', selector: row => row.email, sortable: true },
+    { name: 'Total Loans', width: '200px', selector: row => formatMoney(row.loans), sortable: false },
+    { name: 'Stores', width: '300px', selector: row => row.stores.map(s => s.name).join(", "), sortable: false },
+    { name: 'Created At', width: '200px', selector: row => moment(row.created_at).format("LLL"), sortable: true }
   ]
 
   useEffect(() => {
@@ -82,14 +83,14 @@ const Users = () => {
       showBreadcrumbs={true} 
       breadcrumbs={BREADCRUMBS}
       actions={[]}>
-        <Row>
+        {/* <Row>
           <Col lg={4}>
             <input style={{width: '100%'}} type="search" className={loading ? Classes.SKELETON : ''} value={query} placeholder="Search for a User...." onChange={(e) => {
               setQuery(e.target.value);
               setLoadingData(true);
             }} />
           </Col>
-        </Row>
+        </Row> */}
 
         <Card.Body>
           <div className={loadingData ? Classes.SKELETON : ''}>
@@ -106,7 +107,7 @@ const Users = () => {
             <Col>
               <DetailField field="User ID" value={user.id} />
               <DetailField field="Customer Email" value={user.email} />
-              <DetailField field="Loan Stats" value={user.loans?.map((l) => l.amount).reduce((a,b) => a + b)} />
+              <DetailField field="Loan Stats" value={formatMoney(user.loans)} />
             </Col>
           </Row>
         </Dialog>

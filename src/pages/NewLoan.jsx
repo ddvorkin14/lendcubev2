@@ -233,14 +233,14 @@ const NewLoan = (props) => {
                               labelFor="text-input"
                               labelInfo={input.required ? <span style={{color: 'red'}}>*</span> : ''}>
                                 <DateInput 
-                                  {...getMomentFormatter("LTS")} 
+                                  {...getMomentFormatter("LL")} 
                                   locale="en" 
                                   placeholder={input.label} 
                                   fill={true} 
                                   name={input.field} 
                                   tabIndex={input.tabIndex}
-                                  value={moment(newLoan[input.field]).format("LTS")}
-                                  onChange={(selectedDate) => setNewLoan({...newLoan, [input.field]: selectedDate })}
+                                  value={new Date(newLoan[input.field])}
+                                  onChange={(selectedDate) => setNewLoan({...newLoan, [input.field]: selectedDate }) }
                                   showActionsBar={true} />
                             </FormGroup>
                             
