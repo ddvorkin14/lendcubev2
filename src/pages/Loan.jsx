@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Classes, Button, Divider, Dialog } from "@blueprintjs/core";
+import { Classes, Button, Divider, Dialog, Toaster, Position } from "@blueprintjs/core";
 import { Card, Col, Container, Row } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 // import { init } from "lendcube-zumconnect";
@@ -8,6 +8,13 @@ import axios from "axios";
 import moment from "moment";
 import DetailField from "../components/DetailField";
 import LoanPreview from "../components/LoanPreview";
+
+
+const AppToaster = Toaster.create({
+  className: "recipe-toaster",
+  position: Position.TOP,
+  maxToasts: 2
+});
 
 const Loan = () => {
   const [loading, setLoading] = useState(true);
@@ -35,7 +42,11 @@ const Loan = () => {
     }
 
     window.addEventListener('message', function(e) {
-      console.log(e.data);
+      if(e.step === 'CONNECTIONSUCCESSFULLYCOMPLETED'){
+        AppToaster.show({ message: "User has been successfully verified by ZumConnect", intent: 'success' });
+      } else if(e.step === 'GENERICERROR'){
+        AppToaster.show({ message: "ZumConnect has reported back an error, please contact customer service for assistance", intent: 'danger' });
+      }
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -136,7 +147,7 @@ const Loan = () => {
       </Card>
       
       <Dialog title="ZumConnect" isCloseButtonShown={true} onClose={() => setShowZumConnect(false)} usePortal={true} icon={"shop"} isOpen={showZumConnect} style={{width: 600, height: 700}}>
-        <iframe title="zum-connect" src={`https://connect.zumrails.com/connect-adduser/01b19701-b46f-4a00-9f03-0acf7af151e2`} style={{width: '100%', height: '100%'}} />
+        <iframe title="zum-connect" src={`https://connect.zumrails.com/connect-adduser/${process.env.REACT_APP_ZUM_ID}`} style={{width: '100%', height: '100%'}} />
       </Dialog>
     </Container>
   )
