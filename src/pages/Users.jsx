@@ -34,7 +34,7 @@ const Users = () => {
   const navigate = useNavigate();
 
   const formatMoney = (loans) => {
-    const amount = loans.map(d => d.amount).reduce((a, b) => a + b);
+    const amount = loans.map(d => d.amount).length > 0 ? loans.map(d => d.amount)?.reduce((a, b) => a + b) : 0;
     
     return(
       <div style={{display: 'flex'}}>
