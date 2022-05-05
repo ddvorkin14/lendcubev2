@@ -30,9 +30,11 @@ const Loan = () => {
   }
 
   useEffect(() => {
+    let loanCopy = {};
     if(localStorage?.token?.length > 5){
       axios.get(process.env.REACT_APP_API_URL + 'loans/' + id, authHeader).then((resp) => {
         setLoan(resp.data);
+        loanCopy = resp.data;
         setLoading(false);
       }).catch((e) => {
         navigate("/login");
@@ -42,9 +44,16 @@ const Loan = () => {
     }
 
     window.addEventListener('message', function(e) {
-      if(e.step === 'CONNECTIONSUCCESSFULLYCOMPLETED'){
-        AppToaster.show({ message: "User has been successfully verified by ZumConnect", intent: 'success' });
-      } else if(e.step === 'GENERICERROR'){
+      var data = e.data;
+      if (data && data.origin && data.origin === 'ZUM_RAILS') {
+        loanCopy['zum_customer_id'] = data.userId;
+
+        axios.patch(process.env.REACT_APP_API_URL + "loans/" + id, { new_loan: loanCopy }, authHeader).then((resp) => {
+          setLoan(resp.data.loan);
+          setShowZumConnect(false);
+          AppToaster.show({ message: "User has been successfully verified by ZumConnect", intent: 'success' });
+        });
+      } else if(e.data.step === 'GENERICERROR'){
         AppToaster.show({ message: "ZumConnect has reported back an error, please contact customer service for assistance", intent: 'danger' });
       }
     });
@@ -61,6 +70,8 @@ const Loan = () => {
     setShowZumConnect(true);
   }
 
+  const url_params = `&firstName=${loan?.first_name}&lastName=${loan?.last_name}&email=${loan?.customer_email}&hideShippingAddress=true&displayTermsAndCondition=true&getstatements=true`
+
   return (
     <Container className="pt-4 pb-4 loanInfo">
       <Card className="boxshadowhover">
@@ -71,7 +82,10 @@ const Loan = () => {
           <div style={{float: 'right'}}>
             <Button intent="success" onClick={() => navigate(`/loans/${loan?.id}/bankdetails`) }>Add Bank Details</Button>
             <Button intent="default" onClick={() => navigate(`/loans/${loan?.id}/edit`) } style={{marginLeft: 10}}>Edit Loan</Button>
-            <Button intent="warning" onClick={() => zumConnect()} style={{marginLeft: 10}}>Zum Connect</Button>
+            {/* {!loan?.zum_customer_id?.length > 0 && ( */}
+              <Button intent="warning" onClick={() => zumConnect()} style={{marginLeft: 10}}>Zum Connect</Button>
+            {/* )} */}
+            
           </div>
         </Card.Header>
         <Card.Body>
@@ -119,6 +133,9 @@ const Loan = () => {
               <p className={loading ? Classes.SKELETON : ''}>
                 <strong>Institution Branch Address: </strong>{loan?.financial_institution_branch_address}
               </p>
+              <p className={loading ? Classes.SKELETON : ''}>
+                <strong>ZUM ID: </strong>{loan?.zum_customer_id}
+              </p>
             </Col>
             <Col className="details-section">
               <div className={loading ? Classes.SKELETON : ''} style={{minHeight: '35px'}}></div>
@@ -147,7 +164,7 @@ const Loan = () => {
       </Card>
       
       <Dialog title="ZumConnect" isCloseButtonShown={true} onClose={() => setShowZumConnect(false)} usePortal={true} icon={"shop"} isOpen={showZumConnect} style={{width: 600, height: 700}}>
-        <iframe title="zum-connect" src={`https://connect.zumrails.com/connect-adduser/${process.env.REACT_APP_ZUM_ID}`} style={{width: '100%', height: '100%'}} />
+        <iframe title="zum-connect" src={`${process.env.REACT_APP_ZUM_URL}?testinstitution=${process.env.NODE_ENV === 'development'}${url_params}`} style={{width: '100%', height: '100%'}} />
       </Dialog>
     </Container>
   )
