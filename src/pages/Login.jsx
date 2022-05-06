@@ -23,6 +23,7 @@ const Login = () => {
     
     axios.post(process.env.REACT_APP_API_URL + 'login', { "email": email.value, "password": password.value, headers: headers }).then((resp) => {
       if(resp.data?.access_token){
+        localStorage.current_user_role = resp.data?.role;
         localStorage.token = resp.data?.access_token;
         AppToaster.show({ message: "Login successful, welcome " + resp.data?.email, intent: 'success' });
         navigate("/loans")

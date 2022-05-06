@@ -82,10 +82,9 @@ const Loan = () => {
           <div style={{float: 'right'}}>
             <Button intent="success" onClick={() => navigate(`/loans/${loan?.id}/bankdetails`) }>Add Bank Details</Button>
             <Button intent="default" onClick={() => navigate(`/loans/${loan?.id}/edit`) } style={{marginLeft: 10}}>Edit Loan</Button>
-            {/* {!loan?.zum_customer_id?.length > 0 && ( */}
+            {!loan?.zum_customer_id?.length > 0 && (
               <Button intent="warning" onClick={() => zumConnect()} style={{marginLeft: 10}}>Zum Connect</Button>
-            {/* )} */}
-            
+            )}
           </div>
         </Card.Header>
         <Card.Body>

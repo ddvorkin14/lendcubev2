@@ -8,12 +8,12 @@ const Layout = (props) => {
   return(
     <Container className="pt-4 pb-4 loans-container">
       <Card>
-        <Card.Header align="start" className={loading ? Classes.SKELETON : ''} style={showBreadcrumbs ? {height: 48} : {}}>
+        <Card.Header align="start" className={loading ? Classes.SKELETON : ''} style={{height: 48}}>
           <div style={{float: 'left'}}>
             {showBreadcrumbs ? (
               <Breadcrumbs items={breadcrumbs} />
             ) : (
-              {headerTitle}
+              headerTitle
             )}
           </div>
           <div style={{float: 'right'}}>

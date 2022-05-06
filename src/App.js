@@ -15,6 +15,7 @@ import NewLoan from "./pages/NewLoan";
 import LoanBankDetails from "./pages/LoanBankDetails";
 import Users from "./pages/Users";
 import Stores from "./pages/Stores";
+import Account from "./pages/Account";
 
 function App() {
   console.log(process.env.REACT_APP_API_URL);
@@ -26,6 +27,7 @@ function App() {
         <Routes>
           <Route path="/stores" element={<Stores />} />
           <Route path="/users" element={<Users />} />
+          <Route path="/account" element={<Account />} />
           <Route path="/login" element={<Login />} />
           <Route path="/loans/:id/edit" element={<NewLoan edit={true} />} />
           <Route path="/loans/:id/bankdetails" element={<LoanBankDetails />} />

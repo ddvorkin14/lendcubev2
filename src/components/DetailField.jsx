@@ -8,7 +8,7 @@ const DetailField = (props) => {
       <Col className="field-column">
         <strong>{props.field}: </strong>
       </Col>
-      <Col>
+      <Col style={{textAlign: 'left'}}>
         {props.value}
       </Col>
     </Row>

@@ -17,6 +17,7 @@ const Menu = () => {
   const logout = () => {
     axios.delete(process.env.REACT_APP_API_URL + "login", authHeader).then((resp) => {
       if(resp.data.success){
+        localStorage.current_user_role = null;
         localStorage.token = null;
         navigate("/login");
       }
@@ -31,9 +32,13 @@ const Menu = () => {
       
       <NavbarGroup align={Alignment.RIGHT}>  
         <Button className={Classes.MINIMAL} icon="home" text="Loans" onClick={() => routeChange("loans")} />
-        <Button className={Classes.MINIMAL} icon="inherited-group" text="Users" onClick={() => routeChange("users")} />
-        <Button className={Classes.MINIMAL} icon="shop" text="Stores" onClick={() => routeChange("stores")} />
-
+        {localStorage?.current_user_role === 'admin' && (
+          <>
+            <Button className={Classes.MINIMAL} icon="inherited-group" text="Users" onClick={() => routeChange("users")} />
+            <Button className={Classes.MINIMAL} icon="shop" text="Stores" onClick={() => routeChange("stores")} />  
+          </>
+        )}
+        
         <NavbarDivider />
         {localStorage?.token?.length > 5 ? (
           <>
