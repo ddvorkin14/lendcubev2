@@ -13,12 +13,12 @@ const Layout = (props) => {
             {showBreadcrumbs ? (
               <Breadcrumbs items={breadcrumbs} />
             ) : (
-              headerTitle
+              <span style={{top: 3, position: 'relative'}}>{headerTitle}</span>
             )}
           </div>
           <div style={{float: 'right'}}>
             {actions?.map((action) => {
-              return <Button key={action.id} intent={action.intent} onClick={action.func}>{action.label}</Button>
+              return <Button key={action.id} intent={action.intent} onClick={action.func} style={{marginLeft: 5}}>{action.label}</Button>
             })}
           </div>
         </Card.Header>
