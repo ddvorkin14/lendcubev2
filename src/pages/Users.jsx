@@ -1,7 +1,7 @@
 import { Button, Classes, Dialog, Position, Toaster } from "@blueprintjs/core";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Card, Col, Row } from "react-bootstrap";
+import { Card, Col, FormSelect, Row } from "react-bootstrap";
 import CurrencyFormat from "react-currency-format";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
@@ -9,15 +9,9 @@ import DetailField from "../components/DetailField";
 import Layout from "../components/Layout";
 import moment from "moment";
 
-const BREADCRUMBS = [
-  { href: "/users", icon: "folder-close", text: "Users" }
-];
+const BREADCRUMBS = [{ href: "/users", icon: "folder-close", text: "Users" }];
 
-const authHeader = {
-  headers: {
-    'Authorization': `Bearer ${localStorage.token}`
-  }
-}
+const authHeader = { headers: { 'Authorization': `Bearer ${localStorage.token}` }}
 
 const AppToaster = Toaster.create({
   className: "recipe-toaster",
@@ -26,9 +20,7 @@ const AppToaster = Toaster.create({
 });
 
 const Users = () => {
-  const [loading, setLoading] = useState(true);
   const [loadingData, setLoadingData] = useState(false);
-  const [query, setQuery] = useState("");
   const [data, setData] = useState([]);
   const [user, setUser] = useState({});
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -46,7 +38,6 @@ const Users = () => {
   }
 
   const getUser = (id) => {
-    setLoading(true);
     axios.get(process.env.REACT_APP_API_URL + "users/" + id, authHeader).then((resp) => {
       setUser(resp.data);
       setDialogOpen(true);
@@ -60,38 +51,67 @@ const Users = () => {
     { name: 'ID', width: '80px', selector: row => `${row.id}`, sortable: true },
     { name: 'Email', width: '200px', selector: row => row.email, sortable: true },
     { name: 'Total Loans', width: '200px', selector: row => formatMoney(row.loans), sortable: false },
-    { name: 'Stores', width: '300px', selector: row => row.stores.map(s => s.name).join(", "), sortable: false },
+    { name: 'Stores', width: '250px', selector: row => row.stores.map(s => s.name).join(", "), sortable: false },
+    { name: 'Role', width: '220px', selector: row => renderRoleSelect(row), sortable: false, minWidth: 220 },
     { name: 'Created At', width: '200px', selector: row => moment(row.created_at).format("LLL"), sortable: true }
   ]
 
   useEffect(() => {
     if(localStorage?.token?.length > 5){
-      axios.get(process.env.REACT_APP_API_URL + "users", authHeader).then((resp) => {
-        setData(resp.data.users);
-        setLoading(false);
-      }).catch((e) => {
-        console.log("ERROR: ", e)
-      })
+      updateTable();
     } else {
       navigate("/login");
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const updateTable = () => {
+    axios.get(process.env.REACT_APP_API_URL + "users", authHeader).then((resp) => {
+      setData(resp.data.users);
+    }).catch((e) => {
+      console.log("ERROR: ", e)
+    })
+  }
+
+  const setNewRole = (e) => {
+    const userId = e.target.parentElement.parentElement.id.split("-")[2];
+    axios.post(process.env.REACT_APP_API_URL + "users/" + userId + "/update_role", { new_role: e.target.value }, authHeader).then((resp) => {
+      if(resp.data.code === 'SUCCESS'){
+        AppToaster.show({ message: 'Role update successful', intent: 'success' });
+        updateTable();
+      } else {
+        AppToaster.show({ message: resp.data.error, intent: 'danger' })
+      }
+    })
+  }
+
+  const getCurrentRole = (user) => {
+    if(user.admin)
+      return "admin"
+    if(user.manager)
+      return "manager"
+    if(user.accountant)
+      return "accountant"
+    if(user.employee)
+      return "user"
+  }
+  
+  const renderRoleSelect = (user) => {
+    return (
+      <FormSelect style={{width: '100%'}} onChange={(e) => setNewRole(e)} value={getCurrentRole(user)}>
+        <option value="admin">Administrator</option>
+        <option value="manager">Manager</option>
+        <option value="accountant">Accountant</option>
+        <option value="user">Employee</option>
+      </FormSelect>
+    )
+  }
+
   return (
     <Layout
       showBreadcrumbs={true} 
       breadcrumbs={BREADCRUMBS}
       actions={[]}>
-        {/* <Row>
-          <Col lg={4}>
-            <input style={{width: '100%'}} type="search" className={loading ? Classes.SKELETON : ''} value={query} placeholder="Search for a User...." onChange={(e) => {
-              setQuery(e.target.value);
-              setLoadingData(true);
-            }} />
-          </Col>
-        </Row> */}
-
         <Card.Body>
           <div className={loadingData ? Classes.SKELETON : ''}>
             <DataTable
