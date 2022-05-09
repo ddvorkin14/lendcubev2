@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Classes, Button, Divider, Dialog, Toaster, Position } from "@blueprintjs/core";
-import { Card, Col, Container, Row } from "react-bootstrap";
+import { Card, Col, Container, Row, Table } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 // import { init } from "lendcube-zumconnect";
 
@@ -22,6 +22,8 @@ const Loan = () => {
   const [loan, setLoan] = useState({});
   const navigate = useNavigate();
   const [showZumConnect, setShowZumConnect] = useState(false);
+  const [imgModal, setImgModal] = useState(false);
+  const [selectedImg, setSelectedImg] = useState(null);
   
   const authHeader = {
     headers: {
@@ -72,6 +74,11 @@ const Loan = () => {
 
   const url_params = `&firstName=${loan?.first_name}&lastName=${loan?.last_name}&email=${loan?.customer_email}&hideShippingAddress=true&displayTermsAndCondition=true&getstatements=true`
 
+  const showImgPreview = (doc) => {
+    setSelectedImg(doc);
+    setImgModal(true);
+  }
+
   return (
     <Container className="pt-4 pb-4 loanInfo">
       <Card className="boxshadowhover">
@@ -82,7 +89,7 @@ const Loan = () => {
           <div style={{float: 'right'}}>
             <Button intent="success" onClick={() => navigate(`/loans/${loan?.id}/bankdetails`) }>Add Bank Details</Button>
             <Button intent="default" onClick={() => navigate(`/loans/${loan?.id}/edit`) } style={{marginLeft: 10}}>Edit Loan</Button>
-            {!loan?.zum_customer_id?.length > 0 && (
+            {loan?.zum_customer_id === 'N/A' && (
               <Button intent="warning" onClick={() => zumConnect()} style={{marginLeft: 10}}>Zum Connect</Button>
             )}
           </div>
@@ -154,6 +161,7 @@ const Loan = () => {
 
         </Card.Body>
       </Card>
+
       <Divider/>
       <Card className="boxshadowhover">
         <Card.Header>Loan Preview</Card.Header>
@@ -161,9 +169,38 @@ const Loan = () => {
           <LoanPreview loading={loading} id={id} setNewPlan={setNewPlan}/>
         </Card.Body>
       </Card>
+
+      <Divider/>
+      <Card className="boxshadowhover">
+        <Card.Header>
+          Document Library
+        </Card.Header>
+        <Card.Body>
+          <div style={{display: 'flex', maxHeight: 100, width: 120, margin: 25}}>
+            {loan?.documents?.map((doc) => {
+              return (
+                <img alt={doc?.attachment} src={doc?.preview} className="img" onClick={() => showImgPreview(doc)} />
+              )
+            })}
+          </div>
+
+          <div className={`${loading ? Classes.SKELETON : ''} upload-area`}>
+            <div className="inner-border">
+              <input type="file" className="hidden" />
+              <h4 className="upload-title">Click to upload....</h4>
+            </div>
+          </div>
+          
+        </Card.Body>
+      </Card>
+      
       
       <Dialog title="ZumConnect" isCloseButtonShown={true} onClose={() => setShowZumConnect(false)} usePortal={true} icon={"shop"} isOpen={showZumConnect} style={{width: 600, height: 700}}>
         <iframe title="zum-connect" src={`${process.env.REACT_APP_ZUM_URL}?testinstitution=${process.env.NODE_ENV === 'development'}${url_params}`} style={{width: '100%', height: '100%'}} />
+      </Dialog>
+
+      <Dialog title="Document Preview" isCloseButtonShown={true} onClose={() => setImgModal(false)} usePortal={true} isOpen={imgModal} style={{width: 600, height: 700}}>
+        <img alt={selectedImg?.attachment} src={selectedImg?.preview} style={{width: 600, height: 700}}/>
       </Dialog>
     </Container>
   )
