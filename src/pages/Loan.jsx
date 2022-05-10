@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Classes, Button, Divider, Dialog, Toaster, Position } from "@blueprintjs/core";
-import { Card, Col, Container, Row, Table } from "react-bootstrap";
+import { Card, Col, Container, Row, Spinner } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
-// import { init } from "lendcube-zumconnect";
+import { serialize } from 'object-to-formdata';
 
 import axios from "axios";
 import moment from "moment";
@@ -24,6 +24,7 @@ const Loan = () => {
   const [showZumConnect, setShowZumConnect] = useState(false);
   const [imgModal, setImgModal] = useState(false);
   const [selectedImg, setSelectedImg] = useState(null);
+  const [uploadModal, setUploadModal] = useState(false);
   
   const authHeader = {
     headers: {
@@ -77,6 +78,34 @@ const Loan = () => {
   const showImgPreview = (doc) => {
     setSelectedImg(doc);
     setImgModal(true);
+  }
+
+  const upload = (file, type) => {
+    setUploadModal(true);
+    const url = process.env.REACT_APP_API_URL + "loans/" + id + '/upload_' + type;
+    
+    let formData = new FormData();
+    formData.append(`loan[${type}]`, file.files[0]);
+    authHeader.headers['type'] = 'formData'
+    authHeader.headers['Accept'] = 'application/json'
+
+    fetch(url, {
+      method: "POST",
+      headers: authHeader.headers,
+      body: formData
+    }).then(function (res) {
+      if(res.status === 200){
+        axios.get(process.env.REACT_APP_API_URL + 'loans/' + id, authHeader).then((resp) => {
+          setLoan(resp.data);
+          setUploadModal(false);
+          AppToaster.show({ message: `${type} successfully uploaded`, intent: 'success' });
+        }).catch((e) => {
+          navigate("/login");
+        });
+      }
+    }, function (e) {
+      alert("Error submitting form!");
+    });
   }
 
   return (
@@ -175,19 +204,30 @@ const Loan = () => {
         <Card.Header>
           Document Library
         </Card.Header>
-        <Card.Body>
-          <div style={{display: 'flex', maxHeight: 100, width: 120, margin: 25}}>
-            {loan?.documents?.map((doc) => {
-              return (
-                <img alt={doc?.attachment} src={doc?.preview} className="img" onClick={() => showImgPreview(doc)} />
-              )
-            })}
-          </div>
+        <Card.Body>          
+          <div style={{display: 'flex'}}>
+            <div className={`${loading ? Classes.SKELETON : ''} upload-area`}>
+              <div className="inner-border">
+                <input type="file" className="hidden" name="license" onChange={(e) => upload(e.target, 'license')} />
+                <h4 className="upload-title">License Upload</h4>
+              </div>
+              <div style={{display: 'flex', maxHeight: 100, width: 120, margin: 25}}>
+                {loan?.license &&(
+                  <img alt={loan?.license?.attachment} src={loan?.license?.preview} className="img" onClick={() => showImgPreview(loan?.license)} />
+                )}
+              </div>
+            </div>
 
-          <div className={`${loading ? Classes.SKELETON : ''} upload-area`}>
-            <div className="inner-border">
-              <input type="file" className="hidden" />
-              <h4 className="upload-title">Click to upload....</h4>
+            <div className={`${loading ? Classes.SKELETON : ''} upload-area`}>
+              <div className="inner-border">
+                <input type="file" className="hidden" name="license" onChange={(e) => upload(e.target, 'void_cheque')} />
+                <h4 className="upload-title">Void Cheque Upload</h4>
+              </div>
+              <div style={{display: 'flex', maxHeight: 100, width: 120, margin: 25}}>
+                {loan?.void_cheque && (
+                  <img alt={loan?.void_cheque?.attachment} src={loan?.void_cheque?.preview} className="img" onClick={() => showImgPreview(loan?.void_cheque)} />
+                )}
+              </div>
             </div>
           </div>
           
@@ -201,6 +241,13 @@ const Loan = () => {
 
       <Dialog title="Document Preview" isCloseButtonShown={true} onClose={() => setImgModal(false)} usePortal={true} isOpen={imgModal} style={{width: 600, height: 700}}>
         <img alt={selectedImg?.attachment} src={selectedImg?.preview} style={{width: 600, height: 700}}/>
+      </Dialog>
+
+      <Dialog canOutsideClickClose={false} canEscapeKeyClose={false} onClose={() => setUploadModal(false)} usePortal={true} isOpen={uploadModal} style={{width: 300, height: 300}}>
+        <div style={{margin: '0 auto', textAlign: 'center', position: 'relative', top: '35%'}}>
+          <Spinner animation="border" role="status"></Spinner>
+          <h4>Upload in progress....</h4>
+        </div>
       </Dialog>
     </Container>
   )
