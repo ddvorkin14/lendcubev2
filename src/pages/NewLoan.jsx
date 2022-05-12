@@ -133,18 +133,19 @@ const NewLoan = (props) => {
     { id: 2, label: 'Last Name', field: 'last_name', tabIndex: 2, required: true, type: 'text' },
     { id: 3, label: 'Customer Email', field: 'customer_email', tabIndex: 3, required: true, type: 'text' },
     { id: 4, label: 'Phone #', field: 'customer_phone', tabIndex: 4, required: true, type: 'text' },
+    { id: 17, label: 'Date of Birth', field: 'dob', tabIndex: 5, required: true, type: 'date', minDate: false, disabled: false },
     { id: 5, label: 'divider' },
-    { id: 6, label: 'Address 1', field: 'address1', tabIndex: 5, required: true, type: 'text' },
-    { id: 7, label: 'Address 2', field: 'address2', tabIndex: 6, required: false, type: 'text' },
-    { id: 8, label: 'City', field: 'city', tabIndex: 7, required: true, type: 'text' },
-    { id: 9, label: 'Postal Code', field: 'postalcode', tabIndex: 8, required: true, type: 'text' },
-    { id: 10, label: 'Province', field: 'province', tabIndex: 9, required: true, type: 'text' },
-    { id: 11, label: 'Country', field: 'country', tabIndex: 10, required: true, type: 'text' },
+    { id: 6, label: 'Address 1', field: 'address1', tabIndex: 6, required: true, type: 'text' },
+    { id: 7, label: 'Address 2', field: 'address2', tabIndex: 7, required: false, type: 'text' },
+    { id: 8, label: 'City', field: 'city', tabIndex: 8, required: true, type: 'text' },
+    { id: 9, label: 'Postal Code', field: 'postalcode', tabIndex: 9, required: true, type: 'text' },
+    { id: 10, label: 'Province', field: 'province', tabIndex: 10, required: true, type: 'text' },
+    { id: 11, label: 'Country', field: 'country', tabIndex: 12, required: true, type: 'text' },
     { id: 12, label: 'divider' },
-    { id: 13, label: 'Frequency', field: 'frequency', tabIndex: 11, required: true, type: 'select', options: ["Monthly", "Bi-Weekly"] },
-    { id: 14, label: 'Account Type', field: 'service_use', tabIndex: 12, required: true, type: 'select', options: ["Personal", "Business"] },
-    { id: 15, label: 'Amount ($)', field: 'amount', tabIndex: 13, required: true, type: 'text' },
-    { id: 16, label: 'Start Date', field: 'start_date', tabIndex: 14, required: true, type: 'date' },
+    { id: 13, label: 'Frequency', field: 'frequency', tabIndex: 12, required: true, type: 'select', options: ["Monthly", "Bi-Weekly"] },
+    { id: 14, label: 'Account Type', field: 'service_use', tabIndex: 13, required: true, type: 'select', options: ["Personal", "Business"] },
+    { id: 15, label: 'Amount ($)', field: 'amount', tabIndex: 14, required: true, type: 'text' },
+    { id: 16, label: 'Start Date', field: 'start_date', tabIndex: 15, required: true, type: 'date', minDate: true, disabled: true },
   ]
 
   const checklist = [
@@ -175,7 +176,17 @@ const NewLoan = (props) => {
         parseDate: (str, locale) => moment(str, format).locale(locale).toDate(),
         placeholder: format,
     }
-};
+  };
+
+  const determineDate = (date) => {
+    const today = new Date();
+    const inputDate = new Date(date)
+    if(inputDate < today){
+      return inputDate;
+    }
+
+    return today;
+  }
 
   return (
     <Container className="pt-4 pb-4 loans-container">
@@ -235,9 +246,11 @@ const NewLoan = (props) => {
                                 <DateInput 
                                   {...getMomentFormatter("LL")} 
                                   locale="en" 
+                                  disabled={input.disabled}
                                   placeholder={input.label} 
                                   fill={true} 
                                   name={input.field} 
+                                  minDate={input.minDate ? determineDate(newLoan[input.field]) : new Date('jan 1 1900')}
                                   tabIndex={input.tabIndex}
                                   value={new Date(newLoan[input.field])}
                                   onChange={(selectedDate) => setNewLoan({...newLoan, [input.field]: selectedDate }) }
@@ -255,18 +268,22 @@ const NewLoan = (props) => {
 
             <Col lg={4}>
               <Checklist list={checklist} loading={loading} />
-              <FormGroup
-                className={loading ? Classes.SKELETON : ''}
-                label="Processed By"
-                labelFor="text-input"
-                labelInfo={<span style={{color: 'red'}}>*</span>}>
-                  <Form.Select size="sm" tabIndex={15} name="created_by_id" onChange={(e) => onChange(e)} value={newLoan?.created_by_id}>
-                    <option>-- Select User --</option>
-                    {allPossibleUsers?.map((option) => {
-                      return <option key={option.id} value={option.id}>{option.email}</option>
-                    })}
-                  </Form.Select>
-              </FormGroup>
+              {localStorage?.current_user_role === 'employer' ? (
+                <FormGroup
+                  className={loading ? Classes.SKELETON : ''}
+                  label="Processed By"
+                  labelFor="text-input"
+                  labelInfo={<span style={{color: 'red'}}>*</span>}>
+                    <Form.Select size="sm" tabIndex={15} name="created_by_id" onChange={(e) => onChange(e)} value={newLoan?.created_by_id}>
+                      <option>-- Select User --</option>
+                      {allPossibleUsers?.map((option) => {
+                        return <option key={option.id} value={option.id}>{option.email}</option>
+                      })}
+                    </Form.Select>
+                </FormGroup>
+              ) : (
+                <input type="hidden" name="created_by_id" value={localStorage?.token?.split(":")[0]}/>
+              )}
             </Col>
           </Row>
         </Card.Body>

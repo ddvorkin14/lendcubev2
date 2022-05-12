@@ -12,8 +12,8 @@ const Checklist = (props) => {
         <ul style={{ listStyleType: 'none', paddingLeft: 0 }} className={props.loading ? Classes.SKELETON : ''}>
           {props.list?.map((item) => {
             return (
-              <>
-                <li key={item.id}>
+              <div key={item.id}>
+                <li>
                   <Icon
                     icon={item.func() ? 'tick' : 'cross'} 
                     style={{ color: (item.func() ? 'green' : 'red'), marginRight: 10}} />{item.label}
@@ -31,7 +31,7 @@ const Checklist = (props) => {
                   </ul>
                 </li>
                 <li><Divider/></li>
-              </>
+              </div>
             )
           })}
         </ul>
