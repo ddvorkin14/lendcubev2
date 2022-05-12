@@ -72,7 +72,7 @@ const LoanPreview = (props) => {
               <tbody>
                 {loanPreview['payment_plan'].map((balance) => {
                   return (
-                    <tr>
+                    <tr key={moment(balance['date']).format("L")}>
                       <td>{moment(balance['date']).format("LLL")}</td>
                       <td>{formatMoney(balance['principal_amount'])}</td>
                       <td>{formatMoney(balance['total_payment'] - balance['principal_amount'])}</td>

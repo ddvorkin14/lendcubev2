@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Classes, Button, Divider, Dialog, Toaster, Position } from "@blueprintjs/core";
 import { Card, Col, Container, Row, Spinner } from "react-bootstrap";
-import { useNavigate, useParams } from "react-router-dom";
-import { serialize } from 'object-to-formdata';
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import axios from "axios";
 import moment from "moment";
@@ -13,12 +12,16 @@ import LoanPreview from "../components/LoanPreview";
 const AppToaster = Toaster.create({
   className: "recipe-toaster",
   position: Position.TOP,
-  maxToasts: 2
+  maxToasts: 1
 });
 
 const Loan = () => {
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
+  
+  const location = useLocation();
+  const event = (new URLSearchParams(location.search)).get("event");
+
   const [loan, setLoan] = useState({});
   const navigate = useNavigate();
   const [showZumConnect, setShowZumConnect] = useState(false);
@@ -35,7 +38,9 @@ const Loan = () => {
   useEffect(() => {
     let loanCopy = {};
     if(localStorage?.token?.length > 5){
-      axios.get(process.env.REACT_APP_API_URL + 'loans/' + id, authHeader).then((resp) => {
+      const params = event === 'signing_complete' ? '?event=signing_complete' : '';
+
+      axios.get(process.env.REACT_APP_API_URL + 'loans/' + id + params, authHeader).then((resp) => {
         setLoan(resp.data);
         loanCopy = resp.data;
         setLoading(false);
@@ -44,6 +49,10 @@ const Loan = () => {
       });
     } else {
       navigate("/login");
+    }
+
+    if(event === 'signing_complete'){
+      AppToaster.show({ message: 'Loan Signing completed successfully', intent: 'success' })
     }
 
     window.addEventListener('message', function(e) {
@@ -120,6 +129,11 @@ const Loan = () => {
             <Button intent="default" onClick={() => navigate(`/loans/${loan?.id}/edit`) } style={{marginLeft: 10}}>Edit Loan</Button>
             {loan?.zum_customer_id === 'N/A' && (
               <Button intent="warning" onClick={() => zumConnect()} style={{marginLeft: 10}}>Zum Connect</Button>
+            )}
+            {loan?.docusign_url?.length > 0 && !loan?.agreement_signed ? (
+              <a type="button" intent="primary" target="_blank" href={loan?.docusign_url} style={{marginLeft: 10}}>Sign Agreement</a>
+            ) : (
+              <i style={{marginLeft: 10}}>Agreement Signed!</i>
             )}
           </div>
         </Card.Header>
