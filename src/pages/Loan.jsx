@@ -74,7 +74,7 @@ const Loan = () => {
 
   const setNewPlan = (planId) => {
     axios.post(process.env.REACT_APP_API_URL + "loans/" + id + "/set_new_plan", {rule_id: planId}, authHeader).then((resp) => {
-      setLoan(resp.data.loan);
+      setLoan(resp.data);
     });
   }
 
@@ -133,7 +133,7 @@ const Loan = () => {
             {loan?.docusign_url?.length > 0 && !loan?.agreement_signed ? (
               <a type="button" intent="primary" target="_blank" href={loan?.docusign_url} style={{marginLeft: 10}}>Sign Agreement</a>
             ) : (
-              <i style={{marginLeft: 10}}>Agreement Signed!</i>
+              <i style={{marginLeft: 10}}>{loan?.agreement_signed ? 'Agreement Signed!' : ''}</i>
             )}
           </div>
         </Card.Header>
