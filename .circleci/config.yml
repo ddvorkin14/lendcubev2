@@ -20,7 +20,7 @@ workflows:
   sample:
     jobs:
       - build-and-test
-      - heroku/deploy-  via-git: # Use the pre-configured job, deploy-via-git
+      - heroku/deploy-via-git: # Use the pre-configured job, deploy-via-git
           api-key: '21edda20-257e-42bb-a721-c8eb350e17be' 
           app-name: lendcubev2 
           branch: main 
