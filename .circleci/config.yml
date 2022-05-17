@@ -3,4 +3,7 @@ orbs:
   node: circleci/node@3.0.0
 workflows: 
   node-tests: 
-    jobs: [yarn test]
+    jobs:
+      step:
+        run: yarn test 
+      
