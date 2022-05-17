@@ -4,6 +4,6 @@ workflows:
   example-workflow:
     jobs:
       - node/test:
-          pkg-manager: yarn 
-          test-results-for: other 
-          run-command: test 
+        pkg-manager: yarn 
+        test-results-for: other 
+        run-command: test 
