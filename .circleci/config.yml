@@ -1,3 +1,5 @@
+orbs:
+  node: circleci/node@5.0.2
 version: 2.1
 executors:
   my-custom-executor:
@@ -14,9 +16,12 @@ jobs:
     executor: my-custom-executor
     steps:
       - checkout
+      - node/install:
+          install-yarn: true
+          node-version: '16.13'
+      - run: node --version
       - run: |
           yarn start
-
 workflows:
   my-custom-workflow:
     jobs:
