@@ -1,16 +1,28 @@
 orbs:
-  react: circleci/react@0.2.0
+  node: circleci/node@5.0.2
 version: 2.1
+executors:
+  my-custom-executor:
+    docker:
+      - image: cimg/base:stable
+        auth:
+          # ensure you have first added these secrets
+          # visit app.circleci.com/settings/project/github/ddvorkin14/lendcubev2/environment-variables
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASSWORD
+jobs:
+  test-app:
+
+    executor: my-custom-executor
+    steps:
+      - checkout
+      - node/install:
+          install-yarn: true
+          node-version: '16.13'
+      - run: node --version
+      - run: |
+          yarn start
 workflows:
-  push:
+  my-custom-workflow:
     jobs:
-      - react/install
-      - react/eslint:
-          requires:
-            - react/install
-      - react/test:
-          requires:
-            - react/install
-      - react/coverage:
-          requires:
-            - react/install
+      - test-app
