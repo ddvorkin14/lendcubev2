@@ -76,8 +76,7 @@ const NewLoan = (props) => {
     return !!(
       newLoan?.frequency &&
       newLoan?.service_use &&
-      newLoan?.amount &&
-      newLoan?.start_date
+      newLoan?.amount
     )
   }
 
