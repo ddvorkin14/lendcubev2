@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   node: circleci/node@4.7
+  heroku: circleci/heroku@1.2.6
 
 jobs:
   build-and-test:
