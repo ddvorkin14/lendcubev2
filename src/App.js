@@ -1,5 +1,4 @@
 import {
-  BrowserRouter as Router,
   Routes,
   Route
 } from "react-router-dom";
@@ -18,26 +17,22 @@ import Stores from "./pages/Stores";
 import Account from "./pages/Account";
 
 function App() {
-  console.log(process.env.REACT_APP_API_URL);
   return (
-    <Router>
-      <div className="App">
-        <Menu/>
-        
-        <Routes>
-          <Route path="/stores" element={<Stores />} />
-          <Route path="/users" element={<Users />} />
-          <Route path="/account" element={<Account />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/loans/:id/edit" element={<NewLoan edit={true} />} />
-          <Route path="/loans/:id/bankdetails" element={<LoanBankDetails />} />
-          <Route path="/loans/:id" element={<Loan />} />
-          <Route path="/loans" element={<Loans/>} />
-          <Route path="/loans/new" element={<NewLoan />} />
-          <Route path="/" element={<Loans />} />
-        </Routes>
-      </div>
-    </Router>
+    <div className="App">
+      <Menu/>
+      <Routes>
+        <Route path="/stores" element={<Stores />} />
+        <Route path="/users" element={<Users />} />
+        <Route path="/account" element={<Account />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/loans/:id/edit" element={<NewLoan edit={true} />} />
+        <Route path="/loans/:id/bankdetails" element={<LoanBankDetails />} />
+        <Route path="/loans/:id" element={<Loan />} />
+        <Route path="/loans" element={<Loans/>} />
+        <Route path="/loans/new" element={<NewLoan />} />
+        <Route path="/" element={<Loans />} />
+      </Routes>
+    </div>
   );
 }
 

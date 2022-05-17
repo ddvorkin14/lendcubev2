@@ -24,7 +24,8 @@ const NewLoan = (props) => {
   
   const [newLoan, setNewLoan] = useState({
     start_date: new Date(), dob: new Date(), frequency: 'Monthly', service_use: 'Personal',
-    country: 'Canada', created_by_id: localStorage?.token?.split(":")[0]
+    country: 'Canada', created_by_id: localStorage?.token?.split(":")[0], first_name: '', last_name: '',
+    address1: '', address2: '', city: '', province: '', customer_email: '', customer_phone: ''
   });
   
   const authHeader = {
