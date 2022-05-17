@@ -1,16 +1,7 @@
 orbs:
-  node: circleci/node@3.0.0
-version: 2.1
+  node: circleci/node@5.0.2
 workflows:
-  push:
+  example-workflow:
     jobs:
-      - react/install
-      - react/eslint:
-          requires:
-            - react/install
-      - react/test:
-          requires:
-            - react/install
-      - react/coverage:
-          requires:
-            - react/install
+      - node/test:
+          run-command: test 
