@@ -1,6 +1,16 @@
+orbs:
+  react: thefrontside/react@0.2.0
 version: 2.1
-orbs: 
-  node: circleci/node@3.0.0
-workflows: 
-  node-tests: 
-    jobs: [yarn test]
+workflows:
+  push:
+    jobs:
+      - react/install
+      - react/eslint:
+          requires:
+            - react/install
+      - react/test:
+          requires:
+            - react/install
+      - react/coverage:
+          requires:
+            - react/install
