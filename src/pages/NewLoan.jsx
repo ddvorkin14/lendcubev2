@@ -21,9 +21,10 @@ const NewLoan = (props) => {
   
   // eslint-disable-next-line
   const [newLoanErrors, setNewLoanErrors] = useState([]);
+  
   const [newLoan, setNewLoan] = useState({
     start_date: new Date(), dob: new Date(), frequency: 'Monthly', service_use: 'Personal',
-    country: 'Canada', created_by_id: allPossibleUsers.length > 0 ? allPossibleUsers[0] : ''
+    country: 'Canada', created_by_id: localStorage?.token?.split(":")[0]
   });
   
   const authHeader = {
@@ -42,7 +43,7 @@ const NewLoan = (props) => {
       if(props.edit){
         setLoading(true)
         axios.get(process.env.REACT_APP_API_URL + "loans/" + id, authHeader).then((resp) => {
-          setNewLoan(resp.data);
+          setNewLoan({...resp.data, created_by_id: localStorage?.token?.split(":")[0]})
           setLoading(false)
         })
       }
@@ -112,6 +113,7 @@ const NewLoan = (props) => {
 
   const updateLoan = () => {
     if(allFieldsValid()){
+      debugger;
       axios.patch(process.env.REACT_APP_API_URL + "loans/" + id, { new_loan: newLoan }, authHeader).then((resp) => {
         if(!!resp.data.errors){
           Object.keys(resp.data.errors).map((key) => {
