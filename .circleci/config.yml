@@ -1,7 +1,9 @@
 orbs:
   node: circleci/node@5.0.2
 workflows:
-    example-workflow:
-      jobs:
-        - node/test:
-            pkg-manager: yarn 
+  example-workflow:
+    jobs:
+      - node/test:
+          pkg-manager: yarn 
+          test-results-for: other 
+          run-command: test 
