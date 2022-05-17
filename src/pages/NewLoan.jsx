@@ -252,7 +252,7 @@ const NewLoan = (props) => {
                                   name={input.field} 
                                   minDate={input.minDate ? determineDate(newLoan[input.field]) : new Date('jan 1 1900')}
                                   tabIndex={input.tabIndex}
-                                  value={new Date(newLoan[input.field])}
+                                  value={new Date(newLoan[input.field] || new Date())}
                                   onChange={(selectedDate) => setNewLoan({...newLoan, [input.field]: selectedDate }) }
                                   showActionsBar={true} />
                             </FormGroup>
