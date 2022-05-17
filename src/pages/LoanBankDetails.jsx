@@ -53,7 +53,7 @@ const LoanBankDetails = () => {
   }, []);
 
   const saveBankDetails = () => {
-    axios.patch(process.env.REACT_APP_API_URL + 'loans/' + id, { loan: loan }, authHeader).then((resp) => {
+    axios.patch(process.env.REACT_APP_API_URL + 'loans/' + id, { new_loan: loan }, authHeader).then((resp) => {
       AppToaster.show({ message: 'Loan bank details successfully updated', intent: 'success'})
     }).catch((e) => {
       setLoanErrors(e);
