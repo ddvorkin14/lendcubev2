@@ -22,7 +22,7 @@ const NewLoan = (props) => {
   // eslint-disable-next-line
   const [newLoanErrors, setNewLoanErrors] = useState([]);
   const [newLoan, setNewLoan] = useState({
-    frequency: 'Monthly', service_use: 'Personal',
+    start_date: new Date(), dob: new Date(), frequency: 'Monthly', service_use: 'Personal',
     country: 'Canada', created_by_id: allPossibleUsers.length > 0 ? allPossibleUsers[0] : ''
   });
   

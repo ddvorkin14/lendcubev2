@@ -117,6 +117,17 @@ const Loan = () => {
     });
   }
 
+  const deleteLoan = () => {
+    axios.delete(process.env.REACT_APP_API_URL + "loans/" + id, authHeader).then((resp) => {
+      if(resp.data.success){
+        AppToaster.show({ message: 'Loan was successfully destroyed', intent: 'success' });
+        navigate("/loans");
+      } else {
+        AppToaster.show({ message: 'Loan was not destroyed', intent: 'danger' });
+      }
+    });
+  }
+
   return (
     <Container className="pt-4 pb-4 loanInfo">
       <Card className="boxshadowhover">
@@ -134,6 +145,9 @@ const Loan = () => {
               <a type="button" intent="primary" target="_blank" href={loan?.docusign_url} style={{marginLeft: 10}}>Sign Agreement</a>
             ) : (
               <i style={{marginLeft: 10}}>{loan?.agreement_signed ? 'Agreement Signed!' : ''}</i>
+            )}
+            {localStorage?.current_user_role === 'admin' && (
+              <Button intent="danger" onClick={() => deleteLoan()} style={{marginLeft: 10}}>Destroy</Button>
             )}
           </div>
         </Card.Header>
