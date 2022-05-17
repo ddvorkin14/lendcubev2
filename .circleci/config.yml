@@ -1,7 +1,23 @@
-orbs:
-  node: circleci/node@5.0.2
+version: 2.1
+executors:
+  my-custom-executor:
+    docker:
+      - image: cimg/base:stable
+        auth:
+          # ensure you have first added these secrets
+          # visit app.circleci.com/settings/project/github/ddvorkin14/lendcubev2/environment-variables
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASSWORD
+jobs:
+  test-app:
+
+    executor: my-custom-executor
+    steps:
+      - checkout
+      - run: |
+          yarn start
+
 workflows:
-  example-workflow:
+  my-custom-workflow:
     jobs:
-      - node/test:
-          run-command: test 
+      - test-app
