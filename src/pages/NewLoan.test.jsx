@@ -34,6 +34,8 @@ describe("<NewLoan />", () => {
     fireEvent.change(lastName, { target: { value: 'Doe' }});
     expect(lastName.value).toBe("Doe");
 
-
+    const customerEmail = screen.getByLabelText("Customer Email *")
+    fireEvent.change(customerEmail, { target: { value: 'johndoe@email.com' }});
+    expect(customerEmail.value).toBe("johndoe@email.com");
   })
 })
