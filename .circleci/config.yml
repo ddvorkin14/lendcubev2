@@ -21,7 +21,7 @@ workflows:
     jobs:
       - build-and-test
       - heroku/deploy-via-git: # Use the pre-configured job, deploy-via-git
-          api-key: HEROKU_KEY
+          api-key: HEROKU_API_KEY
           app-name: lendcubev2 
           branch: main 
           requires:
