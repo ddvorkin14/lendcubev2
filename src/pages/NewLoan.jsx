@@ -166,7 +166,7 @@ const NewLoan = (props) => {
       { id: 1, label: 'frequency', func: newLoan?.frequency },
       { id: 2, label: 'account type', func: newLoan?.service_use },
       { id: 3, label: 'loan amount', func: newLoan?.amount },
-      { id: 4, label: 'start date', func: newLoan?.start_date },
+      { id: 4, label: 'start date', func: true },
     ] }
   ]
 
