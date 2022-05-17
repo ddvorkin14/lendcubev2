@@ -1,5 +1,5 @@
 orbs:
-  react: circleci/react@0.2.0
+  node: circleci/node@3.0.0
 version: 2.1
 workflows:
   push:
