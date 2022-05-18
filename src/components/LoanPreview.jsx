@@ -40,7 +40,7 @@ const LoanPreview = (props) => {
     setNewPlan(planId);
     setTimeout(() => setReloadPreview(true), 100);
   }
-  console.log("Selected Rate: ", loanPreview?.selected_plan);
+  
   return (
     <>
       <Row className={loading ? Classes.SKELETON : ''}>
@@ -60,7 +60,7 @@ const LoanPreview = (props) => {
       <Tabs defaultActiveKey="paymentPreview" id="uncontrolled-tab-example" className="mb-3">
         <Tab eventKey="paymentPreview" title="Payment Preview">
           {!loading && (
-            <Row class={loading ? Classes.SKELETON : ''}>
+            <Row className={loading ? Classes.SKELETON : ''}>
               <Col>
                 <strong>First Payment Date</strong>
                 <p>{moment(loanPreview['payment_plan'][0]['date']).format("LL")}</p>

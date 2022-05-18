@@ -8,7 +8,7 @@ import './App.css';
 
 import Loans from "./pages/Loans/Loans";
 import Menu from "./components/Menu";
-import Loan from "./pages/Loan";
+import Loan from "./pages/Loan/Loan";
 import Login from "./pages/Login";
 import NewLoan from "./pages/NewLoan/NewLoan";
 import LoanBankDetails from "./pages/LoanBankDetails";

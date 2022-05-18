@@ -5,8 +5,8 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import axios from "axios";
 import moment from "moment";
-import DetailField from "../components/DetailField";
-import LoanPreview from "../components/LoanPreview";
+import DetailField from "../../components/DetailField";
+import LoanPreview from "../../components/LoanPreview";
 
 
 const AppToaster = Toaster.create({
@@ -38,7 +38,7 @@ const Loan = () => {
   useEffect(() => {
     let loanCopy = {};
     if(localStorage?.token?.length > 5){
-      const params = event === 'signing_complete' ? '?event=signing_complete' : '';
+      let params = event === 'signing_complete' ? '?event=signing_complete' : '';
 
       axios.get(process.env.REACT_APP_API_URL + 'loans/' + id + params, authHeader).then((resp) => {
         setLoan(resp.data);
@@ -47,6 +47,8 @@ const Loan = () => {
       }).catch((e) => {
         navigate("/login");
       });
+
+      return () => (params = false)
     } else {
       navigate("/login");
     }
@@ -69,6 +71,7 @@ const Loan = () => {
         AppToaster.show({ message: "ZumConnect has reported back an error, please contact customer service for assistance", intent: 'danger' });
       }
     });
+    return () => (loanCopy = false)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

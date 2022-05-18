@@ -15,8 +15,8 @@ afterEach(() => server.resetHandlers())
 // Clean up after the tests are finished.
 afterAll(() => server.close())
 
-describe("<Loan />", () => {
-  it("should render the datatable with single record", async () => {
+describe("<Loans />", () => {
+  it("should render the datatable with 3 records then filter down to 1", async () => {
     Object.defineProperty(window, 'localStorage', {
       value: {token: "12345678910"}
     })

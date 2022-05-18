@@ -21,5 +21,14 @@ export const handlers = [
         loans: search ? data.filter((d) => d.first_name.includes("Jo")) : data
       })
     );
-  })
+  }),
+  rest.get("http://localhost:5001/api/v1/loans/undefined", (req, res, ctx) => {
+    const search = req.url.searchParams.get('search');
+
+    return res(
+      ctx.json({
+        loans: search ? data.filter((d) => d.first_name.includes("Jo")) : data
+      })
+    );
+  }),
 ];
