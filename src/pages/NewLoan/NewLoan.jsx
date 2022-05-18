@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Card, Col, Container, Form, Row } from "react-bootstrap";
 import { Button, Classes, Divider, FormGroup, InputGroup, Position, Toast, Toaster } from "@blueprintjs/core";
 import { DateInput } from "@blueprintjs/datetime";
-import Checklist from "../components/Checklist";
+import Checklist from "../../components/Checklist";
 import moment from "moment";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";

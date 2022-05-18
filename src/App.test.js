@@ -12,7 +12,7 @@ afterEach(() => server.resetHandlers())
 // Clean up after the tests are finished.
 afterAll(() => server.close())
 
-test('renders learn react link', () => {
+test('renders lendcube menu', () => {
   render(<BrowserRouter><App /></BrowserRouter>);
   const linkElement = screen.getByText(/lendcube/i);
   expect(linkElement).toBeInTheDocument();

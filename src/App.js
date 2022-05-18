@@ -6,11 +6,11 @@ import {
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
-import Loans from "./pages/Loans";
+import Loans from "./pages/Loans/Loans";
 import Menu from "./components/Menu";
 import Loan from "./pages/Loan";
 import Login from "./pages/Login";
-import NewLoan from "./pages/NewLoan";
+import NewLoan from "./pages/NewLoan/NewLoan";
 import LoanBankDetails from "./pages/LoanBankDetails";
 import Users from "./pages/Users";
 import Stores from "./pages/Stores";

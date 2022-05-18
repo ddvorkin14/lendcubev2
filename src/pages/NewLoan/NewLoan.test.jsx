@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import NewLoan from "./NewLoan";
 import { BrowserRouter } from "react-router-dom";
 
-import { server } from '../../mocks/server.js'
+import { server } from '../../../mocks/server.js'
 
 // Establish API mocking before all tests.
 beforeAll(() => server.listen())

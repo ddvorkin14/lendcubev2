@@ -6,7 +6,7 @@ import Moment from 'moment';
 import { Classes, Button } from "@blueprintjs/core";
 import { useNavigate } from "react-router-dom";
 import CurrencyFormat from "react-currency-format";
-import Layout from "../components/Layout";
+import Layout from "../../components/Layout";
 
 const BREADCRUMBS = [
   { href: "/loans", icon: "folder-close", text: "Loans" }
@@ -27,20 +27,24 @@ const Loans = () => {
 
   useEffect(() => {
     if(localStorage?.token?.length > 10){
-      axios.get(process.env.REACT_APP_API_URL + 'loans?search=' + query, authHeader).then((resp) => {
-        setData(resp.data.loans);
-        setLoading(false);
-        setDataLoading(false);
-      }).catch(function (error) {
-        if(error.code === "ERR_BAD_REQUEST")
-          localStorage.token = null;
-          navigate("/login");
-      });
+      getLoans();
     } else {
       navigate("/login");
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query]);
+
+  const getLoans = () => {
+    axios.get(process.env.REACT_APP_API_URL + 'loans?search=' + query, authHeader).then((resp) => {
+      setData(resp.data.loans);
+      setLoading(false);
+      setDataLoading(false);
+    }).catch(function (error) {
+      if(error.code === "ERR_BAD_REQUEST")
+        localStorage.token = null;
+        navigate("/login");
+    });
+  }
 
   const columns = [
     { name: '', width: '60px', selector: row => <Button minimal={true} icon="eye-open" onClick={() => navigate("/loans/" + row.id) } />, sortable: false },
@@ -65,7 +69,7 @@ const Loans = () => {
       actions={layoutActions}>
         <Row>
           <Col lg={4}>
-            <input style={{width: '100%'}} type="search" className={loading ? Classes.SKELETON : ''} value={query} placeholder="Search for a Loan...." onChange={(e) => {
+            <input style={{width: '100%'}} type="search" data-testid="searchbar" className={loading ? Classes.SKELETON : ''} value={query} placeholder="Search for a Loan...." onChange={(e) => {
               setQuery(e.target.value);
               setDataLoading(true);
             }} />
