@@ -1,4 +1,4 @@
-import { Button, Classes, Dialog, Position, Toaster, FormGroup, InputGroup, MenuItem } from "@blueprintjs/core";
+import { Button, Classes, Dialog, Position, Toaster, FormGroup, InputGroup, MenuItem, Divider } from "@blueprintjs/core";
 import { MultiSelect } from "@blueprintjs/select";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -31,11 +31,13 @@ const Stores = () => {
   const [loading, setLoading] = useState(true)
   const [dialogOpen, setDialogOpen] = useState(false);
   const [allUsers, setAllUsers] = useState([]);
+  const [reloadQuery, setReloadQuery] = useState(true);
 
   useEffect(() => {
     axios.get(process.env.REACT_APP_API_URL + "/stores", authHeader).then((resp) => {
       setStores(resp.data.stores);
       setLoading(false);
+      setReloadQuery(false);
     }).catch((e) => {
       AppToaster.show({ message: 'Error: ' + e, intent: 'danger'});
     });
@@ -43,7 +45,7 @@ const Stores = () => {
     axios.get(process.env.REACT_APP_API_URL + "/users", authHeader).then((resp) => {
       setAllUsers(resp.data.users);
     });
-  }, []);
+  }, [reloadQuery]);
 
   useEffect(() => {
     console.log("Store Data Users: ", storeData?.users);
@@ -64,6 +66,19 @@ const Stores = () => {
   const layoutActions = [
     { id: 1, intent: 'success', label: 'Create New Store', func: () => navigate("/stores/new")}
   ]
+
+  const updateStore = () => {
+    axios.patch(process.env.REACT_APP_API_URL + "stores/" + storeData?.id, { store: storeData }, authHeader).then((resp) => {
+      if(resp.data.success){
+        setDialogOpen(false);
+        setLoading(true);
+        setReloadQuery(true);
+        AppToaster.show({ message: 'Store update successful', intent: 'success'})
+      } else {
+        AppToaster.show({ message: 'Store update was not completed. Please contant IT', intent: 'danger'})
+      }
+    })
+  }
 
   const getStore = (id) => {
     axios.get(process.env.REACT_APP_API_URL + "stores/" + id, authHeader).then((resp) => {
@@ -109,6 +124,7 @@ const Stores = () => {
             selectableRows
             pagination
           />
+
           <Dialog isOpen={dialogOpen} title="Store Details" isCloseButtonShown={true} onClose={() => setDialogOpen(false)} usePortal={true} icon={"shop"} style={{width: 900}}>
             <Row style={{padding: 10}}>
               {formGroups?.map((input) => {
@@ -147,10 +163,20 @@ const Stores = () => {
                     }
                   }}
                   selectedItems={storeData.users} />
-                  <Button onClick={() => updateStoreUsers()} style={{marginLeft: 10}}>Update Store</Button>
+                  <Button onClick={() => updateStoreUsers()} style={{marginLeft: 10}}>Update Store Users</Button>
+              </Col>
+            </Row>
+
+            <Divider/>
+
+            <Row style={{margin: '10px 0px 0px 0px', textAlign: 'right'}}>
+              <Col>
+                <Button intent="default" onClick={() => setDialogOpen(false)}>Cancel</Button>
+                <Button intent="success" onClick={() => updateStore()}>Update Store</Button>
               </Col>
             </Row>
           </Dialog>
+
         </div>
       </Card.Body>
     </Layout>
