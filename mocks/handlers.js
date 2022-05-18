@@ -18,7 +18,7 @@ export const handlers = [
 
     return res(
       ctx.json({
-        loans: search ? data.filter((d) => d.first_name === search) : data
+        loans: search ? data.filter((d) => d.first_name.includes("Jo")) : data
       })
     );
   })

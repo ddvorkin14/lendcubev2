@@ -115,7 +115,7 @@ const LoanBankDetails = () => {
         </Card.Body>
         <Card.Footer style={{height: 48}} className={loading ? Classes.SKELETON : ''}>
           <div style={{float: 'right'}}>
-            <Button icon={"undo"} intent="default" style={{marginRight: 5}} onClick={() => navigate("/loans") }>Cancel</Button>
+            <Button icon={"undo"} intent="default" style={{marginRight: 5}} onClick={() => navigate("/loans/" + loan.id) }>Cancel</Button>
             <Button icon={"reset"} intent="warning" style={{marginRight: 5}} onClick={() => resetLoan() }>Reset Bank Info</Button>
             <Button icon={"saved"} intent="success" onClick={() => saveBankDetails()}>Save Bank Details</Button>
           </div>

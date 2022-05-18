@@ -47,7 +47,7 @@
 }
 
 .money-preview:hover {
-  box-shadow: 3px 3px 7px 0px silver;
+  box-shadow: 3px 3px 5px 0px silver;
 }
 
 .money-preview h4 {
@@ -67,7 +67,7 @@
 }
 
 .boxshadowhover:hover {
-  box-shadow: 3px 3px 7px 0px silver;
+  box-shadow: 3px 3px 5px 0px silver;
 }
 
 .login-form {

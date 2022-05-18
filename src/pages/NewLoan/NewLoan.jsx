@@ -36,7 +36,6 @@ const NewLoan = (props) => {
     if(localStorage?.token?.length > 10){
       axios.get(process.env.REACT_APP_API_URL + 'users', authHeader).then((resp) => {
         setAllPossibleUsers(resp.data.users);
-        setLoading(false)
       }).catch((e) => {
         AppToaster.show({ message: e, intent: 'danger'});
       });
