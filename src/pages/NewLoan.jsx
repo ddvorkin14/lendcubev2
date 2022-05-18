@@ -25,7 +25,7 @@ const NewLoan = (props) => {
   const [newLoan, setNewLoan] = useState({
     start_date: new Date(), dob: new Date(), frequency: 'Monthly', service_use: 'Personal',
     country: 'Canada', created_by_id: localStorage?.token?.split(":")[0], first_name: '', last_name: '',
-    address1: '', address2: '', city: '', province: '', customer_email: '', customer_phone: ''
+    address1: '', address2: '', city: '', province: '', customer_email: '', customer_phone: '', postalcode: '', amount: 0
   });
   
   const authHeader = {
@@ -114,7 +114,6 @@ const NewLoan = (props) => {
 
   const updateLoan = () => {
     if(allFieldsValid()){
-      debugger;
       axios.patch(process.env.REACT_APP_API_URL + "loans/" + id, { new_loan: newLoan }, authHeader).then((resp) => {
         if(!!resp.data.errors){
           Object.keys(resp.data.errors).map((key) => {
@@ -222,6 +221,7 @@ const NewLoan = (props) => {
                               <InputGroup 
                                 id="text-input" 
                                 name={input.field}
+                                data-testid={input.field}
                                 tabIndex={input.tabIndex}
                                 value={newLoan[input.field]} 
                                 onChange={(e) => onChange(e)} />

@@ -17,11 +17,12 @@ const Checklist = (props) => {
                   <Icon
                     icon={item.func() ? 'tick' : 'cross'} 
                     style={{ color: (item.func() ? 'green' : 'red'), marginRight: 10}} />{item.label}
-                  <ul style={{ listStyleType: 'none', paddingLeft: 40 }} className={props.loading ? Classes.SKELETON : ''}>
+                  <ul style={{ listStyleType: 'none', paddingLeft: 40 }} data-testid={`${item.id}-checklist`} className={props.loading ? Classes.SKELETON : ''}>
                     {item.list?.map((listItem) => {
                       return (
                         <li key={listItem.id}>
                           <Icon
+                            data-testid={`list-${listItem.label?.replace(" ", "_")}`}
                             icon={listItem.func ? 'tick' : 'cross'} 
                             style={{ color: (listItem.func ? 'green' : 'red'), marginRight: 10}} />
                           {listItem.label}
