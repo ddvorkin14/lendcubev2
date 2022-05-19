@@ -46,6 +46,8 @@ const NewLoan = (props) => {
           setNewLoan({...resp.data, created_by_id: localStorage?.token?.split(":")[0]})
           setLoading(false)
         })
+      } else {
+        setLoading(false);
       }
     } else {
       navigate("/login");
