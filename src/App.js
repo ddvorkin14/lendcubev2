@@ -15,6 +15,7 @@ import LoanBankDetails from "./pages/LoanBankDetails";
 import Users from "./pages/Users";
 import Stores from "./pages/Stores";
 import Account from "./pages/Account";
+import CreateStore from "./pages/ManageStores/CreateStore";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
       <Menu/>
       <Routes>
         <Route path="/stores" element={<Stores />} />
+        <Route path="/stores/new" element={<CreateStore edit={false} />} />
         <Route path="/users" element={<Users />} />
         <Route path="/account" element={<Account />} />
         <Route path="/login" element={<Login />} />

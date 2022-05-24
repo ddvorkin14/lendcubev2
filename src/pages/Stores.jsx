@@ -34,17 +34,19 @@ const Stores = () => {
   const [reloadQuery, setReloadQuery] = useState(true);
 
   useEffect(() => {
-    axios.get(process.env.REACT_APP_API_URL + "/stores", authHeader).then((resp) => {
-      setStores(resp.data.stores);
-      setLoading(false);
-      setReloadQuery(false);
-    }).catch((e) => {
-      AppToaster.show({ message: 'Error: ' + e, intent: 'danger'});
-    });
-
-    axios.get(process.env.REACT_APP_API_URL + "/users", authHeader).then((resp) => {
-      setAllUsers(resp.data.users);
-    });
+    if(reloadQuery){
+      axios.get(process.env.REACT_APP_API_URL + "/stores", authHeader).then((resp) => {
+        setStores(resp.data.stores);
+        setLoading(false);
+        setReloadQuery(false);
+      }).catch((e) => {
+        AppToaster.show({ message: 'Error: ' + e, intent: 'danger'});
+      });
+  
+      axios.get(process.env.REACT_APP_API_URL + "/users", authHeader).then((resp) => {
+        setAllUsers(resp.data.users);
+      });
+    }
   }, [reloadQuery]);
 
   useEffect(() => {
@@ -55,7 +57,7 @@ const Stores = () => {
     axios.post(process.env.REACT_APP_API_URL + "stores/" + storeData?.id + "/manage_users", { users: storeData?.users }, authHeader).then((resp) => {
       setDialogOpen(false);
       if(resp.data.code === 'USERS_ADDED_SUCCESSFULLY'){
-        setStoreData({...storeData, users: resp.data.users });
+        setReloadQuery(true);
         AppToaster.show({ message: 'Users were successfully added to the store.', intent: 'success' });
       } else {
         AppToaster.show({ message: 'Something went wrong', intent: 'danger' });
@@ -92,6 +94,7 @@ const Stores = () => {
     { name: 'ID', width: '100px', selector: row => `${row.id}`, sortable: true },
     { name: 'Store Name', selector: row => row.name, sortable: true },
     { name: 'Location', selector: row => row.location, sortable: false },
+    { name: 'Users', selector: row => row.users?.length > 0 ? row.users?.map((user) => user?.email).join(", ") : '', sortable: false }
   ]
 
   const formGroups = [

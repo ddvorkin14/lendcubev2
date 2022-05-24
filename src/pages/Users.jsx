@@ -48,9 +48,9 @@ const Users = () => {
 
   const columns = [
     { name: '', width: '60px', selector: row => <Button minimal={true} icon="eye-open" onClick={() => getUser(row.id) } />, sortable: false },
-    { name: 'ID', width: '80px', selector: row => `${row.id}`, sortable: true },
+    { name: 'ID', width: '60px', selector: row => `${row.id}`, sortable: true },
     { name: 'Email', width: '200px', selector: row => row.email, sortable: true },
-    { name: 'Total Loans', width: '200px', selector: row => formatMoney(row.loans), sortable: false },
+    { name: 'Total Loans', width: '180px', selector: row => formatMoney(row.loans), sortable: false },
     { name: 'Stores', width: '250px', selector: row => row.stores.map(s => s.name).join(", "), sortable: false },
     { name: 'Role', width: '220px', selector: row => renderRoleSelect(row), sortable: false, minWidth: 220 },
     { name: 'Created At', width: '200px', selector: row => moment(row.created_at).format("LLL"), sortable: true }

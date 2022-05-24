@@ -3,7 +3,7 @@ import React from "react";
 import { Card, Container } from "react-bootstrap";
 
 const Layout = (props) => {
-  const { loading, showBreadcrumbs, breadcrumbs, headerTitle, actions, children } = props;
+  const { loading, showBreadcrumbs, breadcrumbs, headerTitle, actions, children, showFooter, footer } = props;
 
   return(
     <Container className="pt-4 pb-4 loans-container">
@@ -25,6 +25,11 @@ const Layout = (props) => {
         <Card.Body>
           {children}
         </Card.Body>
+        {showFooter && (
+          <Card.Footer style={{height: 48}}>
+            {footer}
+          </Card.Footer>
+        )}
       </Card>
     </Container>
   )
