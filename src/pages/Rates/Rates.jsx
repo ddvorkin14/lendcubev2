@@ -1,4 +1,4 @@
-import { Button, Dialog, Divider } from "@blueprintjs/core";
+import { Button, Dialog, Divider, Position, Toaster } from "@blueprintjs/core";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Col, Container, FormSelect, Row } from "react-bootstrap";
@@ -6,11 +6,17 @@ import CurrencyFormat from "react-currency-format";
 import DataTable from "react-data-table-component";
 import Layout from "../../components/Layout";
 
+const AppToaster = Toaster.create({
+  className: "recipe-toaster",
+  position: Position.TOP,
+  maxToasts: 2
+});
+
 const BREADCRUMBS = [
   { href: "/rates", icon: "folder-close", text: "Rates" }
 ];
 
-const NEWROW = { id: '', time_length: '', interest_amount: ''}
+const NEWROW = { id: '', time_length: '0.5 Years', interest_amount: '0'}
 
 const Rates = () => {
   const authHeader = { headers: { 'Authorization': `Bearer ${localStorage.token}` }}
@@ -51,11 +57,16 @@ const Rates = () => {
   const variantColumns = [
     { name: 'Time Length', width: '250px', selector: row => timeLengths(row), sortable: false },
     { name: 'Interest Amount (%)', width: '250px', selector: row => interestField(row), sortable: false },
-    { name: 'Actions', width: '100px', selector: row => <Button intent="danger">X</Button>}
+    { name: 'Actions', width: '100px', selector: row => <Button intent="danger" onClick={() => deleteVariant(row)}>X</Button>}
   ]
 
+  const deleteVariant = (row) => {
+    let variants = selectedRate?.variants.filter((variant) => variant.id !== row.id);
+    setSelectedRate({ ...selectedRate, variants: variants });
+  }
+
   const interestField = (row) => {
-    return <input type="text" className="form-control" value={row.interest_amount} onChange={(e) => updateNewRowDetails(e, row)} name="interest_amount" />
+    return <input type="number" className="form-control" value={row.interest_amount} onChange={(e) => updateNewRowDetails(e, row)} name="interest_amount" />
   }
 
   const updateNewRowDetails = (e, row) => {
@@ -84,7 +95,25 @@ const Rates = () => {
   }
 
   const updateSelectedRate = () => {
-    console.log("Selected Rate: ", selectedRate);
+    setNewCount(0);
+    axios.patch(process.env.REACT_APP_API_URL + "rules/" + selectedRate?.id, { rate: selectedRate }, authHeader).then((resp) => {
+      if(resp.data.success){
+        AppToaster.show({ intent: 'success', message: 'Interest Rate has been updated successfully' })
+        setRates(resp.data.rules);
+      } else {
+        AppToaster.show({ intent: 'danger', message: 'Selected Rate could not be updated. Please contact support' })
+      }
+    })
+  }
+
+  const undoChanges = () => {
+    setNewCount(0);
+    axios.get(process.env.REACT_APP_API_URL + "rules", authHeader).then((resp) => {
+      setRates(resp.data.rules);
+      let rate = rates.filter((rate) => rate.id === selectedRate?.id )[0];
+      setSelectedRate(rate);
+      setLoading(false);
+    })
   }
 
   return (
@@ -118,6 +147,7 @@ const Rates = () => {
             </Col>
             <Col style={{position: 'relative', top: 65, textAlign: 'right'}}>
               <Button intent='primary' style={{marginRight: 5}} onClick={() => addRow()}>Add Variant</Button>
+              <Button intent="default" style={{marginRight: 5}} onClick={() => undoChanges()}>Undo Changes</Button>
               <Button intent='success' style={{marginRight: 5}} onClick={() => updateSelectedRate()}>Update</Button>
             </Col>
           </Row>
