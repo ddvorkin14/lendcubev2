@@ -69,14 +69,18 @@ const Stores = () => {
   const handleSelect = (state) => setSelectedRows(state.selectedRows?.map((row) => row?.id));
 
   const destroyStore = () => {
-    axios.post(process.env.REACT_APP_API_URL + "stores/destroy_stores", { store_ids: selectedRows }, authHeader).then((resp) => {
-      if(resp.data?.success){
-        setStores(resp.data.stores);
-        AppToaster.show({ intent: 'success', message: 'Stores were destroyed successfully '})
-      } else {
-        AppToaster.show({ intent: 'danger', message: 'Error: ' + resp.data?.errors })
-      }
-    })
+    if(selectedRows?.length > 0){
+      axios.post(process.env.REACT_APP_API_URL + "stores/destroy_stores", { store_ids: selectedRows }, authHeader).then((resp) => {
+        if(resp.data?.success){
+          setStores(resp.data.stores);
+          AppToaster.show({ intent: 'success', message: 'Stores were destroyed successfully '})
+        } else {
+          AppToaster.show({ intent: 'danger', message: 'Error: ' + resp.data?.errors })
+        }
+      })
+    } else {
+      AppToaster.show({ intent: 'danger', message: 'You must select atleast 1 row before clicking "Destroy Store"' })
+    }
   }
 
   const layoutActions = [

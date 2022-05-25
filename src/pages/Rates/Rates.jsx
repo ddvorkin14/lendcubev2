@@ -1,4 +1,5 @@
 import { Button, Dialog, Divider, Position, Toaster } from "@blueprintjs/core";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Col, Container, FormSelect, Row } from "react-bootstrap";
@@ -25,17 +26,21 @@ const Rates = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedRate, setSelectedRate] = useState({});
   const [newCount, setNewCount] = useState(0);
+  const navigate = useNavigate();
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [reloadQuery, setReloadQuery] = useState(true);
   
   useEffect(() => {
-    if(localStorage?.token?.length > 10){
+    if(localStorage?.token?.length > 10 && reloadQuery){
       axios.get(process.env.REACT_APP_API_URL + "rules", authHeader).then((resp) => {
         setRates(resp.data.rules);
         setLoading(false);
+        setReloadQuery(false);
       })
     } else {
       console.log("Error, not token provided");
     }
-  }, []);
+  }, [reloadQuery]);
 
   const getRate = (id) => {
     setIsOpen(true);
@@ -76,14 +81,13 @@ const Rates = () => {
   }
 
   const timeLengths = (row) => {
+    const timeLengths = ["0.5 Years", "1 Year", "1.5 Years", "2 Years", "2.5 Years", "3 Years"];
     return(
       <FormSelect style={{width: '100%'}} value={row.time_length} name="time_length" onChange={(e) => updateNewRowDetails(e, row)}>
-        <option value="0.5 Years">0.5 Years</option>
-        <option value="1 Year">1 Year</option>
-        <option value="1.5 Years">1.5 Years</option>
-        <option value="2 Years">2 Years</option>
-        <option value="2.5 Years">2.5 Years</option>
-        <option value="3 Years">3 Years</option>
+        {timeLengths.map((tl) => {
+          return <option value={tl}>{tl}</option>
+        })}
+        
       </FormSelect>
     )
   }
@@ -116,14 +120,43 @@ const Rates = () => {
     })
   }
 
+  const layoutActions = [
+    { id: 1, intent: 'success', label: 'Create New Interest Rate', func: () => navigate("/rates/new")},
+    { id: 2, intent: 'danger', label: 'Destroy Rules', func: () => handleDestroy()},
+  ]
+
+  const formatMoney = (amount) => {
+    return(
+      <CurrencyFormat value={amount} displayType={'text'} decimalScale={2} fixedDecimalScale={true} thousandSeparator={true} prefix={'$'} />
+    )
+  }
+
+  const handleSelect = (state) => setSelectedRows(state.selectedRows?.map((row) => row?.id));
+  
+  const handleDestroy = () => {
+    if(selectedRows?.length > 0){
+      axios.post(process.env.REACT_APP_API_URL + "rules/destroy_rules", { ids: selectedRows }, authHeader).then((resp) => {
+        if(resp.data?.success){
+          AppToaster.show({ intent: 'success', message: 'Rates were destroyed successfully' });
+          setReloadQuery(true);
+        } else {
+          AppToaster.show({ intent: 'danger', message: `Error: ${resp.data?.errors}` })
+        }
+      })
+    } else {
+      AppToaster.show({ intent: 'danger', message: 'You must select atleast 1 row before clicking "Destroy Rules"' })
+    }
+  }
+
   return (
-    <Layout showBreadcrumbs={true} breadcrumbs={BREADCRUMBS} headerTitle="Rates">
+    <Layout showBreadcrumbs={true} breadcrumbs={BREADCRUMBS} headerTitle="Rates" actions={layoutActions}>
       {!loading && (
         <DataTable
           columns={columns}
           data={rates}
           selectableRows
           pagination
+          onSelectedRowsChange={handleSelect}
         />
       )}
 
@@ -134,15 +167,16 @@ const Rates = () => {
               <p style={{marginTop: 10}}>
                 <strong>Name: </strong>
                 {selectedRate?.name}
+                
                 <br/>
+
                 <strong>Interest Rate Range: </strong>
-                <CurrencyFormat value={selectedRate?.minimum} displayType={'text'} decimalScale={2} fixedDecimalScale={true} thousandSeparator={true} prefix={'$'} />
-                  &nbsp;to&nbsp;
-                <CurrencyFormat value={selectedRate?.maximum} displayType={'text'} decimalScale={2} fixedDecimalScale={true} thousandSeparator={true} prefix={'$'} />
+                {formatMoney(selectedRate?.minimum)} to {formatMoney(selectedRate?.maximum)}
+                
                 <br/>
-                <p>
-                  <strong>New Variants: </strong>{newCount}
-                </p>
+                
+                <strong>New Variants: </strong>
+                {newCount}
               </p>  
             </Col>
             <Col style={{position: 'relative', top: 65, textAlign: 'right'}}>

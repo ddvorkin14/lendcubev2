@@ -17,6 +17,7 @@ import Stores from "./pages/Stores/Stores";
 import Account from "./pages/Account";
 import CreateStore from "./pages/ManageStores/CreateStore";
 import Rates from "./pages/Rates/Rates";
+import NewRate from "./pages/Rates/NewRate";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
         <Route path="/loans" element={<Loans/>} />
         <Route path="/loans/new" element={<NewLoan />} />
         <Route path="/rates" element={<Rates />} />
+        <Route path="/rates/new" element={<NewRate />} />
         <Route path="/" element={<Loans />} />
       </Routes>
     </div>
