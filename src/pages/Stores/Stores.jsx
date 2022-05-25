@@ -33,6 +33,7 @@ const Stores = () => {
   const [allUsers, setAllUsers] = useState([]);
   const [reloadQuery, setReloadQuery] = useState(true);
   const [selectedRows, setSelectedRows] = useState([]);
+  const [availableRules, setAvailableRules] = useState([]);
 
   useEffect(() => {
     if(reloadQuery){
@@ -47,12 +48,12 @@ const Stores = () => {
       axios.get(process.env.REACT_APP_API_URL + "users", authHeader).then((resp) => {
         setAllUsers(resp.data.users);
       });
+
+      axios.get(process.env.REACT_APP_API_URL + "rules?rule_type=Special Rule", authHeader).then((resp) => {
+        setAvailableRules(resp.data.rules);
+      })
     }
   }, [reloadQuery]);
-
-  useEffect(() => {
-    console.log("Store Data Users: ", storeData?.users);
-  }, [storeData?.users])
 
   const updateStoreUsers = () => {
     axios.post(process.env.REACT_APP_API_URL + "stores/" + storeData?.id + "/manage_users", { users: storeData?.users }, authHeader).then((resp) => {
@@ -60,6 +61,18 @@ const Stores = () => {
       if(resp.data.code === 'USERS_ADDED_SUCCESSFULLY'){
         setReloadQuery(true);
         AppToaster.show({ message: 'Users were successfully added to the store.', intent: 'success' });
+      } else {
+        AppToaster.show({ message: 'Something went wrong', intent: 'danger' });
+      }
+    })
+  }
+
+  const updateStorePlans = () => {
+    axios.post(process.env.REACT_APP_API_URL + "stores/" + storeData?.id + "/manage_plans", { rules: storeData?.rules }, authHeader).then((resp) => {
+      setDialogOpen(false);
+      if(resp.data.code === 'INTEREST_RULE_ADDED_SUCCESSFULLY'){
+        setReloadQuery(true);
+        AppToaster.show({ message: 'Interest Rules were successfully added to the store.', intent: 'success' });
       } else {
         AppToaster.show({ message: 'Something went wrong', intent: 'danger' });
       }
@@ -136,6 +149,21 @@ const Stores = () => {
     )
   }
 
+  const interestRuleMultiSelect = (rule) => {
+    return (
+      <MenuItem
+        key={rule.id}
+        text={rule.name}
+        shouldDismissPopover={true}
+        onClick={() => {
+          if(!storeData?.rules.map(r => r.name).includes(rule.name)){
+            setStoreData({...storeData, rules: [...storeData.rules, rule]});
+          }
+        }}
+      />
+    )
+  }
+
   return(
     <Layout showBreadcrumbs={true} breadcrumbs={BREADCRUMBS} headerTitle="Store List" actions={layoutActions} loading={loading}>
       <Card.Body>
@@ -187,6 +215,30 @@ const Stores = () => {
                   }}
                   selectedItems={storeData.users} />
                   <Button onClick={() => updateStoreUsers()} style={{marginLeft: 10}}>Update Store Users</Button>
+              </Col>
+            </Row>
+            
+            <Divider/>
+
+            <Row style={{padding: 10}}>
+              <Col>
+                <h5>Interest Rules that belong to this store:</h5>
+                <MultiSelect 
+                  popoverProps={{ minimal: true }} 
+                  noResults={<MenuItem disabled={true} text="No results." />}
+                  items={availableRules?.map(u => u)} 
+                  itemRenderer={(u) => interestRuleMultiSelect(u)} 
+                  tagRenderer={(u) => u.name}
+                  onItemSelect={(tag) => {
+                    console.log("Tag Selected: ", tag);
+                  }}
+                  tagInputProps={{
+                    onRemove: (tag) => {
+                      setStoreData({...storeData, rules: storeData.rules.filter(r => r.name !== tag) });
+                    }
+                  }}
+                  selectedItems={storeData.rules} />
+                  <Button onClick={() => updateStorePlans()} style={{marginLeft: 10}}>Update Store Interest Rules</Button>
               </Col>
             </Row>
 

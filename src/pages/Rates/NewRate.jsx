@@ -18,8 +18,8 @@ const variantColumns = [
 ]
 
 const RULETYPES = [
-  { value: 'interest', label: 'Interest' },
-  { value: 'special', label: 'Special Interest'},
+  { value: 'Interest Rule', label: 'Interest' },
+  { value: 'Special Rule', label: 'Special Interest'},
 ]
 
 const AppToaster = Toaster.create({
