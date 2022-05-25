@@ -4,7 +4,7 @@ import { Toast } from "bootstrap";
 import React, { useEffect, useState } from "react";
 import { Card, Col, Container, Row } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
-import Checklist from "../components/Checklist";
+import Checklist from "../../components/Checklist";
 
 const BANKFIELDS = [
   { id: 1, label: 'Institution Number', field: 'financial_institution_number', required: true, tabIndex: 1 },

@@ -35,7 +35,8 @@ const Menu = () => {
         {localStorage?.current_user_role === 'admin' && (
           <>
             <Button className={Classes.MINIMAL} icon="inherited-group" text="Users" onClick={() => routeChange("users")} />
-            <Button className={Classes.MINIMAL} icon="shop" text="Stores" onClick={() => routeChange("stores")} />  
+            <Button className={Classes.MINIMAL} icon="shop" text="Stores" onClick={() => routeChange("stores")} />
+            <Button className={Classes.MINIMAL} icon="percentage" text="Rates" onClick={() => routeChange("rates")} />
           </>
         )}
         
@@ -44,7 +45,7 @@ const Menu = () => {
           <>
             <Button className={Classes.MINIMAL} icon="user" text="" onClick={() => routeChange("account")}/>
             <Button className={Classes.MINIMAL} icon="log-out" text="" onClick={() => logout()} />
-            <Button className={Classes.MINIMAL} icon="cog" text="" />
+            {/* <Button className={Classes.MINIMAL} icon="cog" text="" /> */}
           </>
         ) : (
           <>

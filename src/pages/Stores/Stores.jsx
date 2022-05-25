@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { Card, Col, Row } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
-import Layout from "../components/Layout";
+import Layout from "../../components/Layout";
 
 const AppToaster = Toaster.create({
   className: "recipe-toaster",
@@ -32,10 +32,11 @@ const Stores = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [allUsers, setAllUsers] = useState([]);
   const [reloadQuery, setReloadQuery] = useState(true);
+  const [selectedRows, setSelectedRows] = useState([]);
 
   useEffect(() => {
     if(reloadQuery){
-      axios.get(process.env.REACT_APP_API_URL + "/stores", authHeader).then((resp) => {
+      axios.get(process.env.REACT_APP_API_URL + "stores", authHeader).then((resp) => {
         setStores(resp.data.stores);
         setLoading(false);
         setReloadQuery(false);
@@ -43,7 +44,7 @@ const Stores = () => {
         AppToaster.show({ message: 'Error: ' + e, intent: 'danger'});
       });
   
-      axios.get(process.env.REACT_APP_API_URL + "/users", authHeader).then((resp) => {
+      axios.get(process.env.REACT_APP_API_URL + "users", authHeader).then((resp) => {
         setAllUsers(resp.data.users);
       });
     }
@@ -65,8 +66,22 @@ const Stores = () => {
     })
   }
 
+  const handleSelect = (state) => setSelectedRows(state.selectedRows?.map((row) => row?.id));
+
+  const destroyStore = () => {
+    axios.post(process.env.REACT_APP_API_URL + "stores/destroy_stores", { store_ids: selectedRows }, authHeader).then((resp) => {
+      if(resp.data?.success){
+        setStores(resp.data.stores);
+        AppToaster.show({ intent: 'success', message: 'Stores were destroyed successfully '})
+      } else {
+        AppToaster.show({ intent: 'danger', message: 'Error: ' + resp.data?.errors })
+      }
+    })
+  }
+
   const layoutActions = [
-    { id: 1, intent: 'success', label: 'Create New Store', func: () => navigate("/stores/new")}
+    { id: 1, intent: 'success', label: 'Create New Store', func: () => navigate("/stores/new") },
+    { id: 2, intent: 'danger', label: 'Delete Store', func: () => destroyStore() }
   ]
 
   const updateStore = () => {
@@ -126,6 +141,7 @@ const Stores = () => {
             data={stores}
             selectableRows
             pagination
+            onSelectedRowsChange={handleSelect}
           />
 
           <Dialog isOpen={dialogOpen} title="Store Details" isCloseButtonShown={true} onClose={() => setDialogOpen(false)} usePortal={true} icon={"shop"} style={{width: 900}}>

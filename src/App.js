@@ -11,11 +11,12 @@ import Menu from "./components/Menu";
 import Loan from "./pages/Loan/Loan";
 import Login from "./pages/Login";
 import NewLoan from "./pages/NewLoan/NewLoan";
-import LoanBankDetails from "./pages/LoanBankDetails";
-import Users from "./pages/Users";
-import Stores from "./pages/Stores";
+import LoanBankDetails from "./pages/Loan/LoanBankDetails";
+import Users from "./pages/Users/Users";
+import Stores from "./pages/Stores/Stores";
 import Account from "./pages/Account";
 import CreateStore from "./pages/ManageStores/CreateStore";
+import Rates from "./pages/Rates/Rates";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
         <Route path="/loans/:id" element={<Loan />} />
         <Route path="/loans" element={<Loans/>} />
         <Route path="/loans/new" element={<NewLoan />} />
+        <Route path="/rates" element={<Rates />} />
         <Route path="/" element={<Loans />} />
       </Routes>
     </div>

@@ -5,8 +5,8 @@ import { Card, Col, FormSelect, Row } from "react-bootstrap";
 import CurrencyFormat from "react-currency-format";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
-import DetailField from "../components/DetailField";
-import Layout from "../components/Layout";
+import DetailField from "../../components/DetailField";
+import Layout from "../../components/Layout";
 import moment from "moment";
 
 const BREADCRUMBS = [{ href: "/users", icon: "folder-close", text: "Users" }];
