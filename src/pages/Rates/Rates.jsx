@@ -55,7 +55,8 @@ const Rates = () => {
     { name: '', width: '60px', selector: row => <Button minimal={true} icon="eye-open" onClick={() => getRate(row.id) } />, sortable: false },
     { name: 'ID', width: '70px', selector: row => `${row.id}`, sortable: true },
     { name: 'Name', width: '200px', selector: row => `${row.name}`, sortable: true },
-    { name: 'Range', width: '200px', selector: row => `$${row?.minimum} to $${row?.maximum}`, sortable: false },
+    { name: 'Type', width: '150px', selector: row => `${row.rule_type}`, sortable: true },
+    { name: 'Range', width: '200px', selector: row => `$${row?.start_range} to $${row?.end_range}`, sortable: false },
     { name: 'Interest Rules', selector: row => `${printVariants(row.variants)}` }
   ]
 
@@ -160,26 +161,42 @@ const Rates = () => {
         />
       )}
 
-      <Dialog isOpen={isOpen} title={`Interest Rates for ${selectedRate?.name} - ($${selectedRate.minimum} - $${selectedRate.maximum})`} isCloseButtonShown={true} onClose={() => setIsOpen(false)} usePortal={true} icon={"shop"} style={{width: 900}}>
+      <Dialog isOpen={isOpen} title={`Interest Rates for ${selectedRate?.name} - ($${selectedRate.start_range} - $${selectedRate.end_range})`} isCloseButtonShown={true} onClose={() => setIsOpen(false)} usePortal={true} icon={"shop"} style={{width: 900}}>
         <Container>
           <Row>
-            <Col>
-              <p style={{marginTop: 10}}>
-                <strong>Name: </strong>
-                {selectedRate?.name}
-                
-                <br/>
-
-                <strong>Interest Rate Range: </strong>
-                {formatMoney(selectedRate?.minimum)} to {formatMoney(selectedRate?.maximum)}
-                
-                <br/>
-                
-                <strong>New Variants: </strong>
-                {newCount}
-              </p>  
+            <Col style={{margin: 10}}>
+              <Row style={{marginBottom: 10}}>
+                <Col lg={3} style={{textAlign: 'right'}}>
+                  <strong>Name: </strong>
+                </Col>
+                <Col>
+                  <input style={{width: '100%'}} type="text" value={selectedRate?.name} onChange={(e) => setSelectedRate({...selectedRate, name: e.target.value}) } />                
+                </Col>
+              </Row>
+              <Row style={{marginBottom: 10}}>
+                <Col lg={3} style={{textAlign: 'right'}}>
+                  <strong>Type: </strong>
+                </Col>
+                <Col>
+                  <select style={{height: 32, width: '100%'}} onChange={(e) => setSelectedRate({...selectedRate, rule_type: e.target.value })}>
+                    <option value="Interest Rule" selected={selectedRate?.rule_type === 'Interest Rule'}>Interest Rule</option>
+                    <option value="Special Rule" selected={selectedRate?.rule_type === 'Special Rule'}>Special Rule</option>
+                  </select>
+                </Col>
+              </Row>
+              <Row style={{marginBottom: 10}}>
+                <Col lg={3} style={{textAlign: 'right'}}>
+                  <strong>Range: </strong>
+                </Col>
+                <Col>
+                  <input style={{width: '100%'}} type="text" value={selectedRate?.start_range} onChange={(e) => setSelectedRate({...selectedRate, start_range: e.target.value}) } />                
+                </Col>
+                <Col>
+                  <input style={{width: '100%'}} type="text" value={selectedRate?.end_range} onChange={(e) => setSelectedRate({...selectedRate, end_range: e.target.value}) } />                
+                </Col>
+              </Row>
             </Col>
-            <Col style={{position: 'relative', top: 65, textAlign: 'right'}}>
+            <Col style={{position: 'relative', top: 110, textAlign: 'right'}}>
               <Button intent='primary' style={{marginRight: 5}} onClick={() => addRow()}>Add Variant</Button>
               <Button intent="default" style={{marginRight: 5}} onClick={() => undoChanges()}>Undo Changes</Button>
               <Button intent='success' style={{marginRight: 5}} onClick={() => updateSelectedRate()}>Update</Button>
