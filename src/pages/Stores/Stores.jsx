@@ -36,7 +36,7 @@ const Stores = () => {
   const [availableRules, setAvailableRules] = useState([]);
 
   useEffect(() => {
-    if(reloadQuery){
+    if(localStorage.token?.length > 10 && reloadQuery){
       axios.get(process.env.REACT_APP_API_URL + "stores", authHeader).then((resp) => {
         setStores(resp.data.stores);
         setLoading(false);
