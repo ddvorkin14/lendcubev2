@@ -17,12 +17,6 @@ const BREADCRUMBS = [
   { href: "/stores", icon: "folder-close", text: "Stores" }
 ];
 
-const authHeader = {
-  headers: {
-    'Authorization': `Bearer ${localStorage.token}`
-  }
-}
-
 const Stores = () => {
   const navigate = useNavigate();
   const [stores, setStores] = useState([]);
@@ -34,6 +28,8 @@ const Stores = () => {
   const [reloadQuery, setReloadQuery] = useState(true);
   const [selectedRows, setSelectedRows] = useState([]);
   const [availableRules, setAvailableRules] = useState([]);
+
+  const authHeader = { headers: { 'Authorization': `Bearer ${localStorage.token}` }};
 
   useEffect(() => {
     if(localStorage.token?.length > 10 && reloadQuery){

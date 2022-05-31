@@ -11,8 +11,6 @@ import moment from "moment";
 
 const BREADCRUMBS = [{ href: "/users", icon: "folder-close", text: "Users" }];
 
-const authHeader = { headers: { 'Authorization': `Bearer ${localStorage.token}` }}
-
 const AppToaster = Toaster.create({
   className: "recipe-toaster",
   position: Position.TOP,
@@ -25,6 +23,8 @@ const Users = () => {
   const [user, setUser] = useState({});
   const [dialogOpen, setDialogOpen] = useState(false);
   const navigate = useNavigate();
+
+  const authHeader = { headers: { 'Authorization': `Bearer ${localStorage.token}` }}
 
   const formatMoney = (loans) => {
     const amount = loans?.map(d => d.amount)?.length > 0 ? loans?.map(d => d.amount)?.reduce((a, b) => a + b) : 0;
