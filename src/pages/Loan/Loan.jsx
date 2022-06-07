@@ -35,6 +35,17 @@ const Loan = () => {
     }
   }
 
+  const bankDetailsPresent = () => {
+    if(loan){
+      const { branch_transit_number, deposit_account_number, financial_institution_branch_address, financial_institution_name, financial_institution_number } = loan;
+      if(branch_transit_number && deposit_account_number && financial_institution_branch_address && financial_institution_name && financial_institution_number){
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   useEffect(() => {
     let loanCopy = {};
     if(localStorage?.token?.length > 5){
@@ -144,8 +155,8 @@ const Loan = () => {
             {loan?.zum_customer_id === 'N/A' && (
               <Button intent="warning" onClick={() => zumConnect()} style={{marginLeft: 10}}>Zum Connect</Button>
             )}
-            {loan?.docusign_url?.length > 0 && !loan?.agreement_signed ? (
-              <a type="button" intent="primary" target="_blank" href={loan?.docusign_url} style={{marginLeft: 10}}>Sign Agreement</a>
+            {loan?.docusign_url?.length > 0 && !loan?.agreement_signed && bankDetailsPresent() ? (
+              <a type="button" intent="primary" href={loan?.docusign_url} style={{marginLeft: 10}}>Sign Agreement</a>
             ) : (
               <i style={{marginLeft: 10}}>{loan?.agreement_signed ? 'Agreement Signed!' : ''}</i>
             )}

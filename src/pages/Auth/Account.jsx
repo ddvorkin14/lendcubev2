@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Col, Row } from "react-bootstrap";
-import DetailField from "../components/DetailField";
-import Layout from "../components/Layout";
+import DetailField from "../../components/DetailField";
+import Layout from "../../components/Layout";
 import { Button, Divider } from "@blueprintjs/core";
 import CurrencyFormat from "react-currency-format";
 import { useNavigate } from "react-router-dom";

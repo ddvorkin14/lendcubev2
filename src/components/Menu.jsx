@@ -27,29 +27,36 @@ const Menu = () => {
   return (
     <Navbar>
       <NavbarGroup align={Alignment.LEFT}>
-        <NavbarHeading style={{cursor: 'pointer'}} onClick={() => routeChange("loans")}>Lendcube Admin</NavbarHeading>
+        <NavbarHeading style={{cursor: 'pointer'}} onClick={() => routeChange("loans")}>Lendcube</NavbarHeading>
       </NavbarGroup>
       
       <NavbarGroup align={Alignment.RIGHT}>  
-        <Button className={Classes.MINIMAL} icon="home" text="Loans" onClick={() => routeChange("loans")} />
-        {localStorage?.current_user_role === 'admin' && (
-          <>
-            <Button className={Classes.MINIMAL} icon="inherited-group" text="Users" onClick={() => routeChange("users")} />
-            <Button className={Classes.MINIMAL} icon="shop" text="Stores" onClick={() => routeChange("stores")} />
-            <Button className={Classes.MINIMAL} icon="percentage" text="Rates" onClick={() => routeChange("rates")} />
-          </>
-        )}
-        
-        <NavbarDivider />
         {localStorage?.token?.length > 5 ? (
           <>
-            <Button className={Classes.MINIMAL} icon="user" text="" onClick={() => routeChange("account")}/>
-            <Button className={Classes.MINIMAL} icon="log-out" text="" onClick={() => logout()} />
-            {/* <Button className={Classes.MINIMAL} icon="cog" text="" /> */}
+            {localStorage?.current_user_role === 'admin' && (
+              <Button className={Classes.MINIMAL} icon="dashboard" text="Dashboard" onClick={() => routeChange("dashboard")} />  
+            )}
+
+            <Button className={Classes.MINIMAL} icon="home" text="Loans" onClick={() => routeChange("loans")} />
+            {localStorage?.current_user_role === 'admin' && (
+              <>
+                <Button className={Classes.MINIMAL} icon="inherited-group" text="Users" onClick={() => routeChange("users")} />
+                <Button className={Classes.MINIMAL} icon="shop" text="Stores" onClick={() => routeChange("stores")} />
+                <Button className={Classes.MINIMAL} icon="percentage" text="Rates" onClick={() => routeChange("rates")} />
+              </>
+            )}
+            <NavbarDivider />
+            <>
+              <Button className={Classes.MINIMAL} icon="user" text="" onClick={() => routeChange("account")}/>
+              <Button className={Classes.MINIMAL} icon="log-out" text="" onClick={() => logout()} />
+            </>
           </>
         ) : (
           <>
-            <Button className={Classes.MINIMAL} icon="log-in" text="" onClick={() => routeChange("login")}/>
+            <>
+              <Button className={Classes.MINIMAL} icon="log-in" text="Login" onClick={() => routeChange('login')} />
+              <Button className={Classes.MINIMAL} icon="plus" text="Sign Up" onClick={() => routeChange('signup')} />
+            </>
           </>
         )}
         
