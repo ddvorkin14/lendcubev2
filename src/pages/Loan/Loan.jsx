@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Classes, Button, Divider, Dialog, Toaster, Position } from "@blueprintjs/core";
-import { Card, Col, Container, Row, Spinner } from "react-bootstrap";
+import { Card, Col, Container, Row, Spinner, Tabs, Tab } from "react-bootstrap";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import axios from "axios";
 import moment from "moment";
 import DetailField from "../../components/DetailField";
 import LoanPreview from "../../components/LoanPreview";
+import MissingPayments from "./MissingPayments";
 
 
 const AppToaster = Toaster.create({
@@ -144,153 +145,162 @@ const Loan = () => {
 
   return (
     <Container className="pt-4 pb-4 loanInfo">
-      <Card className="boxshadowhover">
-        <Card.Header align="start" className={`${loading ? Classes.SKELETON : ''}`} style={{height: 48}}>
-          <div style={{float: 'left'}}>
-            {`#0000${loan?.id}`}
-          </div>
-          <div style={{float: 'right'}}>
-            <Button intent="success" onClick={() => navigate(`/loans/${loan?.id}/bankdetails`) }>Add Bank Details</Button>
-            <Button intent="default" onClick={() => navigate(`/loans/${loan?.id}/edit`) } style={{marginLeft: 10}}>Edit Loan</Button>
-            {loan?.zum_customer_id === 'N/A' && (
-              <Button intent="warning" onClick={() => zumConnect()} style={{marginLeft: 10}}>Zum Connect</Button>
-            )}
-            {loan?.docusign_url?.length > 0 && !loan?.agreement_signed && bankDetailsPresent() ? (
-              <a type="button" intent="primary" href={loan?.docusign_url} style={{marginLeft: 10}}>Sign Agreement</a>
-            ) : (
-              <i style={{marginLeft: 10}}>{loan?.agreement_signed ? 'Agreement Signed!' : ''}</i>
-            )}
-            {localStorage?.current_user_role === 'admin' && (
-              <Button intent="danger" onClick={() => deleteLoan()} style={{marginLeft: 10}}>Destroy</Button>
-            )}
-          </div>
-        </Card.Header>
-        <Card.Body>
-          <Row>
-            <Col sm="3">
-              <div className={`${loading ? Classes.SKELETON : ''} money-preview`}>
-                <h4>$ {loan?.amount}</h4>
-                <small>Rate: {loan?.selected_rate}%</small><br/>
-                <small>{loan?.frequency}</small>
+      <Tabs defaultActiveKey="details" id="main-tabs" className="mb-3">
+        <Tab eventKey="details" title="Details">
+          <Card className="boxshadowhover">
+            <Card.Header align="start" className={`${loading ? Classes.SKELETON : ''}`} style={{height: 48}}>
+              <div style={{float: 'left'}}>
+                {`#0000${loan?.id}`}
               </div>
-            </Col>
-            <Col className="details-section">
-              <Row style={{marginTop: 20}}>
-                <Col sm={6}>
-                  <DetailField loading={loading} field="Customer Email" value={loan.customer_email} />
-                  <DetailField loading={loading} field="Full Name/DOB" value={`${loan?.first_name} ${loan?.last_name} - ${moment(loan?.dob).format("LL")}`} />
-                  <DetailField loading={loading} field="Phone #" value={loan.customer_phone} />
-                  <DetailField loading={loading} field="Service Use" value={loan.service_use} />
-                  <DetailField loading={loading} field="Start Date" value={moment(loan?.start_date).format("LL")} />
-                  <DetailField loading={loading} field="Created By" value={loan.created_by?.email} />
+              <div style={{float: 'right'}}>
+                <Button intent="success" onClick={() => navigate(`/loans/${loan?.id}/bankdetails`) }>Add Bank Details</Button>
+                <Button intent="default" onClick={() => navigate(`/loans/${loan?.id}/edit`) } style={{marginLeft: 10}}>Edit Loan</Button>
+                {loan?.zum_customer_id === 'N/A' && (
+                  <Button intent="warning" onClick={() => zumConnect()} style={{marginLeft: 10}}>Zum Connect</Button>
+                )}
+                {loan?.docusign_url?.length > 0 && !loan?.agreement_signed && bankDetailsPresent() ? (
+                  <a type="button" intent="primary" href={loan?.docusign_url} style={{marginLeft: 10}}>Sign Agreement</a>
+                ) : (
+                  <i style={{marginLeft: 10}}>{loan?.agreement_signed ? 'Agreement Signed!' : ''}</i>
+                )}
+                {localStorage?.current_user_role === 'admin' && (
+                  <Button intent="danger" onClick={() => deleteLoan()} style={{marginLeft: 10}}>Destroy</Button>
+                )}
+              </div>
+            </Card.Header>
+            <Card.Body>
+              <Row>
+                <Col sm="3">
+                  <div className={`${loading ? Classes.SKELETON : ''} money-preview`}>
+                    <h4>$ {loan?.amount}</h4>
+                    <small>Rate: {loan?.selected_rate}%</small><br/>
+                    <small>{loan?.frequency}</small>
+                  </div>
                 </Col>
-                <Col>
-                  <DetailField loading={loading} field="Address 1" value={loan.address1} />
-                  <DetailField loading={loading} field="Address 2" value={loan.address2} />
-                  <DetailField loading={loading} field="City" value={loan.city} />
-                  <DetailField loading={loading} field="Postal Code" value={loan.postalcode} />
-                  <DetailField loading={loading} field="Province" value={loan.province} />
-                  <DetailField loading={loading} field="Canada" value={loan.country} />
+                <Col className="details-section">
+                  <Row style={{marginTop: 20}}>
+                    <Col sm={6}>
+                      <DetailField loading={loading} field="Customer Email" value={loan.customer_email} />
+                      <DetailField loading={loading} field="Full Name/DOB" value={`${loan?.first_name} ${loan?.last_name} - ${moment(loan?.dob).format("LL")}`} />
+                      <DetailField loading={loading} field="Phone #" value={loan.customer_phone} />
+                      <DetailField loading={loading} field="Service Use" value={loan.service_use} />
+                      <DetailField loading={loading} field="Start Date" value={moment(loan?.start_date).format("LL")} />
+                      <DetailField loading={loading} field="Created By" value={loan.created_by?.email} />
+                    </Col>
+                    <Col>
+                      <DetailField loading={loading} field="Address 1" value={loan.address1} />
+                      <DetailField loading={loading} field="Address 2" value={loan.address2} />
+                      <DetailField loading={loading} field="City" value={loan.city} />
+                      <DetailField loading={loading} field="Postal Code" value={loan.postalcode} />
+                      <DetailField loading={loading} field="Province" value={loan.province} />
+                      <DetailField loading={loading} field="Canada" value={loan.country} />
+                    </Col>
+                  </Row>
                 </Col>
               </Row>
-            </Col>
-          </Row>
+              
+              <br/>
+
+              <Row>
+                <Col lg={8} className="details-section">
+                  <h4 className={loading ? Classes.SKELETON : ''}>Financial Details: </h4>
+                  <p className={loading ? Classes.SKELETON : ''}>
+                    <strong>Institution #: </strong>{loan?.financial_institution_number}
+                  </p>
+                  <p className={loading ? Classes.SKELETON : ''}>
+                    <strong>Institution Name: </strong>{loan?.financial_institution_name}
+                  </p>
+                  <p className={loading ? Classes.SKELETON : ''}>
+                    <strong>Institution Branch Address: </strong>{loan?.financial_institution_branch_address}
+                  </p>
+                  <p className={loading ? Classes.SKELETON : ''}>
+                    <strong>ZUM ID: </strong>{loan?.zum_customer_id}
+                  </p>
+                </Col>
+                <Col className="details-section">
+                  <div className={loading ? Classes.SKELETON : ''} style={{minHeight: '35px'}}></div>
+                  <p className={loading ? Classes.SKELETON : ''}>
+                    <strong>Deposit Account #: </strong>{loan?.deposit_account_number}
+                  </p>
+                  <p className={loading ? Classes.SKELETON : ''}>
+                    <strong>Transit #: </strong>{loan?.branch_transit_number}
+                  </p>
+                  <p className={loading ? Classes.SKELETON : ''}>
+                    <strong>Account Type: </strong>{loan?.account_type}
+                  </p>
+                </Col>
+              </Row>
+
+              <br/>
+
+            </Card.Body>
+          </Card>
+
+          <Divider/>
+          <Card className="boxshadowhover">
+            <Card.Header>Loan Preview</Card.Header>
+            <Card.Body>
+              <LoanPreview loading={loading} id={id} setNewPlan={setNewPlan}/>
+            </Card.Body>
+          </Card>
+
+          <Divider/>
+          <Card className="boxshadowhover">
+            <Card.Header>
+              Document Library
+            </Card.Header>
+            <Card.Body>          
+              <div style={{display: 'flex'}}>
+                <div className={`${loading ? Classes.SKELETON : ''} upload-area`}>
+                  <div className="inner-border">
+                    <input type="file" className="hidden" name="license" onChange={(e) => upload(e.target, 'license')} />
+                    <h4 className="upload-title">License Upload</h4>
+                  </div>
+                  <div style={{display: 'flex', maxHeight: 100, width: 120, margin: 25}}>
+                    {loan?.license &&(
+                      <img alt={loan?.license?.attachment} src={loan?.license?.preview} className="img" onClick={() => showImgPreview(loan?.license)} />
+                    )}
+                  </div>
+                </div>
+
+                <div className={`${loading ? Classes.SKELETON : ''} upload-area`}>
+                  <div className="inner-border">
+                    <input type="file" className="hidden" name="license" onChange={(e) => upload(e.target, 'void_cheque')} />
+                    <h4 className="upload-title">Void Cheque Upload</h4>
+                  </div>
+                  <div style={{display: 'flex', maxHeight: 100, width: 120, margin: 25}}>
+                    {loan?.void_cheque && (
+                      <img alt={loan?.void_cheque?.attachment} src={loan?.void_cheque?.preview} className="img" onClick={() => showImgPreview(loan?.void_cheque)} />
+                    )}
+                  </div>
+                </div>
+              </div>
+              
+            </Card.Body>
+          </Card>
           
-          <br/>
-
-          <Row>
-            <Col lg={8} className="details-section">
-              <h4 className={loading ? Classes.SKELETON : ''}>Financial Details: </h4>
-              <p className={loading ? Classes.SKELETON : ''}>
-                <strong>Institution #: </strong>{loan?.financial_institution_number}
-              </p>
-              <p className={loading ? Classes.SKELETON : ''}>
-                <strong>Institution Name: </strong>{loan?.financial_institution_name}
-              </p>
-              <p className={loading ? Classes.SKELETON : ''}>
-                <strong>Institution Branch Address: </strong>{loan?.financial_institution_branch_address}
-              </p>
-              <p className={loading ? Classes.SKELETON : ''}>
-                <strong>ZUM ID: </strong>{loan?.zum_customer_id}
-              </p>
-            </Col>
-            <Col className="details-section">
-              <div className={loading ? Classes.SKELETON : ''} style={{minHeight: '35px'}}></div>
-              <p className={loading ? Classes.SKELETON : ''}>
-                <strong>Deposit Account #: </strong>{loan?.deposit_account_number}
-              </p>
-              <p className={loading ? Classes.SKELETON : ''}>
-                <strong>Transit #: </strong>{loan?.branch_transit_number}
-              </p>
-              <p className={loading ? Classes.SKELETON : ''}>
-                <strong>Account Type: </strong>{loan?.account_type}
-              </p>
-            </Col>
-          </Row>
-
-          <br/>
-
-        </Card.Body>
-      </Card>
-
-      <Divider/>
-      <Card className="boxshadowhover">
-        <Card.Header>Loan Preview</Card.Header>
-        <Card.Body>
-          <LoanPreview loading={loading} id={id} setNewPlan={setNewPlan}/>
-        </Card.Body>
-      </Card>
-
-      <Divider/>
-      <Card className="boxshadowhover">
-        <Card.Header>
-          Document Library
-        </Card.Header>
-        <Card.Body>          
-          <div style={{display: 'flex'}}>
-            <div className={`${loading ? Classes.SKELETON : ''} upload-area`}>
-              <div className="inner-border">
-                <input type="file" className="hidden" name="license" onChange={(e) => upload(e.target, 'license')} />
-                <h4 className="upload-title">License Upload</h4>
-              </div>
-              <div style={{display: 'flex', maxHeight: 100, width: 120, margin: 25}}>
-                {loan?.license &&(
-                  <img alt={loan?.license?.attachment} src={loan?.license?.preview} className="img" onClick={() => showImgPreview(loan?.license)} />
-                )}
-              </div>
-            </div>
-
-            <div className={`${loading ? Classes.SKELETON : ''} upload-area`}>
-              <div className="inner-border">
-                <input type="file" className="hidden" name="license" onChange={(e) => upload(e.target, 'void_cheque')} />
-                <h4 className="upload-title">Void Cheque Upload</h4>
-              </div>
-              <div style={{display: 'flex', maxHeight: 100, width: 120, margin: 25}}>
-                {loan?.void_cheque && (
-                  <img alt={loan?.void_cheque?.attachment} src={loan?.void_cheque?.preview} className="img" onClick={() => showImgPreview(loan?.void_cheque)} />
-                )}
-              </div>
-            </div>
-          </div>
           
-        </Card.Body>
-      </Card>
-      
-      
-      <Dialog title="ZumConnect" isCloseButtonShown={true} onClose={() => setShowZumConnect(false)} usePortal={true} icon={"shop"} isOpen={showZumConnect} style={{width: 600, height: 700}}>
-        <iframe title="zum-connect" src={`${process.env.REACT_APP_ZUM_URL}?testinstitution=${process.env.NODE_ENV === 'development'}${url_params}`} style={{width: '100%', height: '100%'}} />
-      </Dialog>
+          <Dialog title="ZumConnect" isCloseButtonShown={true} onClose={() => setShowZumConnect(false)} usePortal={true} icon={"shop"} isOpen={showZumConnect} style={{width: 600, height: 700}}>
+            <iframe title="zum-connect" src={`${process.env.REACT_APP_ZUM_URL}?testinstitution=${process.env.NODE_ENV === 'development'}${url_params}`} style={{width: '100%', height: '100%'}} />
+          </Dialog>
 
-      <Dialog title="Document Preview" isCloseButtonShown={true} onClose={() => setImgModal(false)} usePortal={true} isOpen={imgModal} style={{width: 600, height: 700}}>
-        <img alt={selectedImg?.attachment} src={selectedImg?.preview} style={{width: 600, height: 700}}/>
-      </Dialog>
+          <Dialog title="Document Preview" isCloseButtonShown={true} onClose={() => setImgModal(false)} usePortal={true} isOpen={imgModal} style={{width: 600, height: 700}}>
+            <img alt={selectedImg?.attachment} src={selectedImg?.preview} style={{width: 600, height: 700}}/>
+          </Dialog>
 
-      <Dialog canOutsideClickClose={false} canEscapeKeyClose={false} onClose={() => setUploadModal(false)} usePortal={true} isOpen={uploadModal} style={{width: 300, height: 300}}>
-        <div style={{margin: '0 auto', textAlign: 'center', position: 'relative', top: '35%'}}>
-          <Spinner animation="border" role="status"></Spinner>
-          <h4>Upload in progress....</h4>
-        </div>
-      </Dialog>
+          <Dialog canOutsideClickClose={false} canEscapeKeyClose={false} onClose={() => setUploadModal(false)} usePortal={true} isOpen={uploadModal} style={{width: 300, height: 300}}>
+            <div style={{margin: '0 auto', textAlign: 'center', position: 'relative', top: '35%'}}>
+              <Spinner animation="border" role="status"></Spinner>
+              <h4>Upload in progress....</h4>
+            </div>
+          </Dialog>
+        </Tab>
+        {loan?.zum_customer_id?.length > 3 && localStorage.current_user_role === 'admin' && (
+          <Tab eventKey="missing_payments" title="Payments" disabled={localStorage.current_user_role !== 'admin'}>
+            <MissingPayments id={id} loan={loan} />
+          </Tab>
+        )}
+      </Tabs>
     </Container>
   )
 }
