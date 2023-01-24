@@ -17,6 +17,7 @@ const Loans = () => {
   const [loading, setLoading] = useState(true);
   const [dataLoading, setDataLoading] = useState(true);
   const [query, setQuery] = useState("");
+  const [selectedFilter, setSelectedFilter] = useState("all")
   const navigate = useNavigate();
 
   const authHeader = {
@@ -26,13 +27,14 @@ const Loans = () => {
   }
 
   useEffect(() => {
+    setLoading(true)
     if(localStorage?.token?.length > 10){
-      getLoans();
+      selectedFilter === 'all' ? getLoans() : getMissingLoans();
     } else {
       navigate("/login");
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query]);
+  }, [query, selectedFilter]);
 
   const getLoans = () => {
     axios.get(process.env.REACT_APP_API_URL + 'loans?search=' + query, authHeader).then((resp) => {
@@ -40,9 +42,22 @@ const Loans = () => {
       setLoading(false);
       setDataLoading(false);
     }).catch(function (error) {
-      if(error.code === "ERR_BAD_REQUEST")
+      if(error.code === "ERR_BAD_REQUEST"){
         localStorage.token = null;
         navigate("/login");
+      }
+    });
+  }
+
+  const getMissingLoans = () => {
+    axios.get(process.env.REACT_APP_API_URL + 'loans/missed_payment_loans', authHeader).then((resp) => {
+      setData(resp.data.loan.sort((a, b) => b.id - a.id));
+      setLoading(false);
+      setDataLoading(false);
+    }).catch(function (error) {
+      if(error.code === "ERR_BAD_REQUEST"){
+        console.log("Error: ", error);
+      }
     });
   }
 
@@ -78,12 +93,20 @@ const Loans = () => {
 
         <Card.Body>
           <div className={dataLoading ? Classes.SKELETON : ''}>
-            <DataTable
-              columns={columns}
-              data={data}
-              selectableRows
-              pagination
-            />
+            <div style={{textAlign: 'left'}}>
+              <Button intent={selectedFilter === 'all' ? 'primary' : 'default'} onClick={() => setSelectedFilter("all")} style={{marginLeft: 5}}>All</Button>
+              <Button intent={selectedFilter === 'missing' ? 'primary' : 'default'} onClick={() => setSelectedFilter("missing")} style={{marginLeft: 5}}>Missing Payments</Button>
+            </div>
+            {!loading ? (
+              <DataTable
+                columns={columns}
+                data={data}
+                selectableRows
+                pagination
+              />
+            ) : (
+              <p>Loading...</p>
+            )}
           </div>
         </Card.Body>
     </Layout>
