@@ -11,7 +11,6 @@ const MissingPayments = (props) => {
   const [data, setData] = useState([]);
   const [token, setToken] = useState("");
   const [loanPreview, setLoanPreview] = useState({});
-  const [paymentsCheck, setPaymentsCheck] = useState(false);
 
   const columns = [
     { name: 'Date', width: '140px', selector: row => `${parseDate(row.date)}`, sortable: false },
@@ -154,9 +153,8 @@ const MissingPayments = (props) => {
           row.transactionStatus = "Upcoming"
         }
       });
-
-      setPaymentsCheck(true);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
 
   return(
@@ -165,13 +163,11 @@ const MissingPayments = (props) => {
         {`Manage Payments for #0000${loan?.id} | ${loan?.customer_email}`}
       </Card.Header>
       <Card.Body>
-        {paymentsCheck && (
-          <DataTable
-            columns={columns}
-            data={loanPreview?.payment_plan}
-            pagination
-          />
-        )}
+        <DataTable
+          columns={columns}
+          data={loanPreview?.payment_plan}
+          pagination
+        />
       </Card.Body>
     </Card>
   )
