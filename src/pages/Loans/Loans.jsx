@@ -3,11 +3,18 @@ import React, { useEffect, useState } from "react";
 import { Card, Row, Col } from "react-bootstrap";
 import DataTable from 'react-data-table-component';
 import Moment from 'moment';
-import { Classes, Button, MenuItem } from "@blueprintjs/core";
+import { Classes, Button, MenuItem, Toaster, Position } from "@blueprintjs/core";
+import { Tooltip2, Classes as Classes2 } from "@blueprintjs/popover2";
 import { useNavigate } from "react-router-dom";
 import CurrencyFormat from "react-currency-format";
 import Layout from "../../components/Layout";
 import { Select2 } from "@blueprintjs/select";
+
+const AppToaster = Toaster.create({
+  className: "recipe-toaster",
+  position: Position.TOP,
+  maxToasts: 2
+});
 
 const BREADCRUMBS = [
   { href: "/loans", icon: "folder-close", text: "Loans" }
@@ -77,8 +84,30 @@ const Loans = () => {
     });
   }
 
+  const sendMailer = (loanID) => {
+    axios.get(process.env.REACT_APP_API_URL + 'notifications/missing_payment?loan_id=' + loanID, authHeader).then((resp) => {
+      AppToaster.show({ message: resp.data.message, intent: 'success' });
+    }).catch(function (error) {
+      if(error.code === "ERR_BAD_REQUEST"){
+        console.log("Error: ", error);
+      }
+    });
+  }
+
   const columns = [
     { name: '', width: '60px', selector: row => <Button minimal={true} icon="eye-open" onClick={() => navigate("/loans/" + row.id) } />, sortable: false },
+    { name: '', width: '60px', selector: row => {
+      return(
+        <Tooltip2 
+          placement="top" 
+          content="Missing Payment Email!"
+          className={Classes2.TOOLTIP2_INDICATOR}
+          usePortal={false}
+          intent="success">
+            <Button minimal={true} icon="envelope" onClick={() => sendMailer(row.id) } />
+        </Tooltip2>
+      )
+    }, sortable: false }, 
     { name: 'ID', width: '100px', selector: row => `${row.id}`, sortable: false },
     { name: 'First Name', selector: row => row.first_name, sortable: true },
     { name: 'Last Name', selector: row => row.last_name, sortable: true },
