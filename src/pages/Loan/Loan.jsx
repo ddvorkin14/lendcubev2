@@ -70,6 +70,7 @@ const Loan = () => {
     }
 
     window.addEventListener('message', function(e) {
+      console.log("event listener triggered")
       var data = e.data;
       if (data && data.origin && data.origin === 'ZUM_RAILS') {
         loanCopy['zum_customer_id'] = data.userId;
@@ -102,6 +103,12 @@ const Loan = () => {
   const showImgPreview = (doc) => {
     setSelectedImg(doc);
     setImgModal(true);
+  }
+
+  const createTransaction = () => {
+    axios.post("https://app.lendcube.ca/loans/" + id + "/sync_zum").then((resp) => {
+      console.log("Response: ", resp);
+    })
   }
 
   const upload = (file, type) => {
@@ -155,8 +162,10 @@ const Loan = () => {
               <div style={{float: 'right'}}>
                 <Button intent="success" onClick={() => navigate(`/loans/${loan?.id}/bankdetails`) }>Add Bank Details</Button>
                 <Button intent="default" onClick={() => navigate(`/loans/${loan?.id}/edit`) } style={{marginLeft: 10}}>Edit Loan</Button>
-                {loan?.zum_customer_id === 'N/A' && (
+                {loan?.zum_customer_id === 'N/A' ? (
                   <Button intent="warning" onClick={() => zumConnect()} style={{marginLeft: 10}}>Zum Connect</Button>
+                ) : (
+                  <Button intent="primary" onClick={() => createTransaction()} style={{marginLeft: 10}}>Create Transaction</Button>
                 )}
                 {loan?.docusign_url?.length > 0 && !loan?.agreement_signed && bankDetailsPresent() ? (
                   <a type="button" intent="primary" href={loan?.docusign_url} style={{marginLeft: 10}}>Sign Agreement</a>
@@ -281,7 +290,7 @@ const Loan = () => {
           
           
           <Dialog title="ZumConnect" isCloseButtonShown={true} onClose={() => setShowZumConnect(false)} usePortal={true} icon={"shop"} isOpen={showZumConnect} style={{width: 600, height: 700}}>
-            <iframe title="zum-connect" src={`${process.env.REACT_APP_ZUM_URL}?testinstitution=${process.env.NODE_ENV === 'development'}${url_params}`} style={{width: '100%', height: '100%'}} />
+            <iframe title="zum-connect" src={`${process.env.REACT_APP_ZUM_URL}&testinstitution=${process.env.NODE_ENV === 'development'}${url_params}`} style={{width: '100%', height: '100%'}} />
           </Dialog>
 
           <Dialog title="Document Preview" isCloseButtonShown={true} onClose={() => setImgModal(false)} usePortal={true} isOpen={imgModal} style={{width: 600, height: 700}}>
