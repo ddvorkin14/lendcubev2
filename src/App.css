@@ -37,6 +37,18 @@
   }
 }
 
+#step-one .bp4-label, #step-two .bp4-label, #step-three .bp4-label, #step-four .bp4-label {
+  text-align: left;
+}
+
+#step-one.container, #step-two.container, #step-three.container {
+  width: 60%
+}
+
+#step-one .bp4-form-group, #step-two .bp4-form-group, #step-three .bp4-form-group {
+  padding: 5px;
+}
+
 
 .money-preview {
   background: whitesmoke;
@@ -118,8 +130,19 @@
   filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0)
 }
 
+.pagination-buttons {
+  text-align: right;
+}
 
+.pagination-buttons button {
+  margin-left: 2px;
+  margin-right: 2px;
+}
+.container {
+  margin-top: 10px;
+}
 @media only screen and (max-width: 600px) {
+  
   .login-form {
     width: 90%
   }
@@ -132,5 +155,20 @@
   .money-preview h4 {
     padding-top: 15%;
     font-size: 44px;
+  }
+  #step-one.container, #step-two.container, #step-three.container {
+    width: 90%
+  }
+  .bp4-navbar {
+    padding: 0px 0px 0px 7px;
+  }
+  .bp4-navbar .bp4-button-text {
+    display: none;
+  }
+}
+
+@media only screen and (max-width: 1200px) {
+  #step-one.container, #step-two.container, #step-three.container {
+    width: 80%
   }
 }

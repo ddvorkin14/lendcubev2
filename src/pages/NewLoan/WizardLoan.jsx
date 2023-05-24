@@ -3,51 +3,111 @@
 // 3. loan agreement - docusign
 // 4. zum connect
 
-import React, { useEffect } from "react";
-import axios from "axios"
+import { Position, Toaster } from "@blueprintjs/core";
+import moment from "moment";
+import React, { useState } from "react";
+import StepFour from "./StepFour";
+import StepOne from "./StepOne";
+import StepThree from "./StepThree";
+import StepTwo from "./StepTwo";
+// import axios from "axios"
+
+const AppToaster = Toaster.create({
+  className: "recipe-toaster",
+  position: Position.TOP,
+  maxToasts: 2
+});
 
 const WizardLoan = () => {
-  const SignWell = ({
-    async run() {
-      const headers = {
-        "X-Api-Key": "YWNjZXNzOmU1OWZmYzRlNTQ4YjUzOGZhY2MxZTc5YWZhMWMzZWI1",
-      }
+  const [page, setPage] = useState(1);
+  const [loan, setLoan] = useState({ start_date: new Date(), frequency: 'Monthly', service_use: 'Personal' });
 
-      const data = { 
-        "test_mode": true,
-        "template_id": "c83ee11d-a373-4851-9132-bc6e8c987b73",
-        "embedded_signing": true,
-        "template_fields": [
-          { "api_id": 'Loan Date', "value": '2023-05-01T00:00:00-05:00' },
-          { "api_id": 'Borrower Name', "value": "Daniel Dvorkin"}
-        ],
-        "recipients": [
-          {
-            "id": "1",
-            "placeholder_name": "Lendcube",
-            "name": "Lendcube",
-            "email": "hello@lendcube.ca"
-          }, {
-            "id": "client@email.com",
-            "placeholder_name": "Client",
-            "name": "First LastName",
-            "email": "client@email.com"
-          }
-        ]
-      }
+  const prevPage = () => setPage(page - 1)
+  const nextPage = () => {
+    if(validate())
+      setPage(page + 1)
+  }
 
-      return await axios.post('https://www.signwell.com/api/v1/document_templates/documents/', data, { headers: headers });
-    },
-  })
+  const validate = () => {
+    if(page === 1) {
+      return validatePageOne();
+    } else if(page === 2) {
+      return validatePageTwo();
+    } else if(page === 3) {
+      return true;
+    } else if(page === 4){
+      return true;
+    } else {
+      return false;
+    }
+  }
 
-  useEffect(() => {
-    SignWell.run().then((resp) => {
-      console.log("Response: ", resp)
-    })
-  }, []);
+  const validatePageOne = () => {
+    if(loan.first_name?.length > 0 && loan.last_name?.length > 0 && loan.customer_email?.length > 0)
+      return true
+    else
+      AppToaster.show({ message: "All required fields must be filled out before continuing", intent: 'danger'});
+  }
+
+  const validatePageTwo = () => {
+    if(loan.frequency?.length > 0 && loan.service_use?.length > 0 && loan.amount?.length > 0 && moment(loan.start_date).isValid())
+      return true;
+    else
+      AppToaster.show({ message: "All required fields must be filled out before continuing", intent: 'danger'});
+  }
+
+  const determineDate = (date) => {
+    const today = new Date();
+    const inputDate = new Date(date)
+    if(inputDate < today){
+      return inputDate;
+    }
+
+    return today;
+  }
+
+  const getMomentFormatter = (format) => {
+    return {
+        formatDate: (date, locale) => moment(date).locale(locale).format(format),
+        parseDate: (str, locale) => moment(str, format).locale(locale).toDate(),
+        placeholder: format,
+    }
+  };
 
   return (
-    <h1>Wizard Loan</h1>
+    <>
+      {page === 1 && <StepOne 
+        onSubmit={() => nextPage()} 
+        loan={loan} 
+        setLoan={setLoan} 
+        determineDate={(date) => determineDate(date)}
+        getMomentFormatter={(format) => getMomentFormatter(format)}
+      />}
+      {page === 2 && <StepTwo 
+        onSubmit={() => nextPage()} 
+        previousPage={() => prevPage()} 
+        loan={loan} 
+        setLoan={setLoan}
+        determineDate={(date) => determineDate(date)}
+        getMomentFormatter={(format) => getMomentFormatter(format)}
+      />}
+      {page === 3 && <StepThree 
+        onSubmit={() => nextPage()} 
+        previousPage={() => prevPage()} 
+        loan={loan} 
+        setLoan={setLoan} 
+        determineDate={(date) => determineDate(date)}
+        getMomentFormatter={(format) => getMomentFormatter(format)}
+      />}
+      {page === 4 && <StepFour 
+        onSubmit={() => nextPage()} 
+        previousPage={() => prevPage()} 
+        loan={loan} 
+        setLoan={setLoan} 
+        determineDate={(date) => determineDate(date)}
+        getMomentFormatter={(format) => getMomentFormatter(format)}
+      />}
+    </>
   )
 }
 
