@@ -20,6 +20,7 @@ import Rates from "./pages/Rates/Rates";
 import NewRate from "./pages/Rates/NewRate";
 import Signup from "./pages/Auth/Signup";
 import Dashboard from "./pages/Dashboard/Dashboard";
+import WizardLoan from "./pages/NewLoan/WizardLoan";
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
         <Route path="/loans/new" element={<NewLoan />} />
         <Route path="/rates" element={<Rates />} />
         <Route path="/rates/new" element={<NewRate />} />
+        <Route path="/loans/wizard" element={<WizardLoan />} />
         <Route path="/" element={<Loans />} />
       </Routes>
     </div>
