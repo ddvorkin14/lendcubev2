@@ -4,7 +4,7 @@ import { Container } from "react-bootstrap";
 
 const StepThree = (props) => {
   const { onSubmit, previousPage, loan, setLoan } = props;
-  const [showIframe, setShowIframe] = useState(loan.zum_customer_id?.length === 0);
+  const [showIframe, setShowIframe] = useState(loan.zum_customer_id?.length === undefined && true);
 
   const url_params = `&firstName=${loan?.first_name}&lastName=${loan?.last_name}&email=${loan?.customer_email}&hideShippingAddress=true&displayTermsAndCondition=true&getstatements=true`
   
