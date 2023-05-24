@@ -34,7 +34,7 @@ const WizardLoan = () => {
     } else if(page === 2) {
       return validatePageTwo();
     } else if(page === 3) {
-      return true;
+      return loan.zum_customer_id.length > 0;
     } else if(page === 4){
       return true;
     } else {

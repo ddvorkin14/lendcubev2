@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Classes, Divider, FormGroup, InputGroup } from "@blueprintjs/core";
-import { Col, Container, Row } from "react-bootstrap";
+import { Card, Col, Container, Row } from "react-bootstrap";
 import { DateInput } from "@blueprintjs/datetime";
 
 const StepOne = (props) => {
@@ -22,6 +22,34 @@ const StepOne = (props) => {
 
     setLoan({...loan, [name]: value })
   }
+
+  // const upload = (file, type) => {
+  //   setUploadModal(true);
+  //   const url = process.env.REACT_APP_API_URL + "loans/" + id + '/upload_' + type;
+    
+  //   let formData = new FormData();
+  //   formData.append(`loan[${type}]`, file.files[0]);
+  //   authHeader.headers['type'] = 'formData'
+  //   authHeader.headers['Accept'] = 'application/json'
+
+  //   fetch(url, {
+  //     method: "POST",
+  //     headers: authHeader.headers,
+  //     body: formData
+  //   }).then(function (res) {
+  //     if(res.status === 200){
+  //       axios.get(process.env.REACT_APP_API_URL + 'loans/' + id, authHeader).then((resp) => {
+  //         setLoan(resp.data);
+  //         setUploadModal(false);
+  //         AppToaster.show({ message: `${type} successfully uploaded`, intent: 'success' });
+  //       }).catch((e) => {
+  //         navigate("/login");
+  //       });
+  //     }
+  //   }, function (e) {
+  //     alert("Error submitting form!");
+  //   });
+  // }
 
   return (
     <Container id="step-one">
@@ -82,6 +110,40 @@ const StepOne = (props) => {
               )
             )
           })}
+
+          {/* <Card className="boxshadowhover">
+            <Card.Header>
+              Document Library
+            </Card.Header>
+            <Card.Body>          
+              <div style={{display: 'flex'}}>
+                <div className={`${loading ? Classes.SKELETON : ''} upload-area`}>
+                  <div className="inner-border">
+                    <input type="file" className="hidden" name="license" onChange={(e) => upload(e.target, 'license')} />
+                    <h4 className="upload-title">License Upload</h4>
+                  </div>
+                  <div style={{display: 'flex', maxHeight: 100, width: 120, margin: 25}}>
+                    {loan?.license &&(
+                      <img alt={loan?.license?.attachment} src={loan?.license?.preview} className="img" onClick={() => showImgPreview(loan?.license)} />
+                    )}
+                  </div>
+                </div>
+
+                <div className={`${loading ? Classes.SKELETON : ''} upload-area`}>
+                  <div className="inner-border">
+                    <input type="file" className="hidden" name="license" onChange={(e) => upload(e.target, 'void_cheque')} />
+                    <h4 className="upload-title">Void Cheque Upload</h4>
+                  </div>
+                  <div style={{display: 'flex', maxHeight: 100, width: 120, margin: 25}}>
+                    {loan?.void_cheque && (
+                      <img alt={loan?.void_cheque?.attachment} src={loan?.void_cheque?.preview} className="img" onClick={() => showImgPreview(loan?.void_cheque)} />
+                    )}
+                  </div>
+                </div>
+              </div>
+              
+            </Card.Body>
+          </Card> */}
         </Row>
         <div className="pagination-buttons">
           <Button onClick={onSubmit} className="next">
