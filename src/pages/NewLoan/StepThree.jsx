@@ -27,21 +27,29 @@ const StepThree = (props) => {
       <h1 style={{ textAlign: 'left' }}>Step 3:</h1>
       <form onSubmit={onSubmit}>
         {showIframe ? (
-          <iframe title="zum-connect" src={`${process.env.REACT_APP_ZUM_URL}${process.env.NODE_ENV === 'development' ? '&testinstitution=true' : ''}${url_params}`} style={{width: '100%', height: 700}} />
+          <iframe title="zum-connect" src={`${process.env.REACT_APP_ZUM_URL}${process.env.NODE_ENV === 'development' ? '&testinstitution=true' : ''}`} style={{width: '100%', height: 700}} />
         ) : (
           <>
             <h1>You may proceed to the next step</h1>
             <p><strong>ZUM Customer ID: </strong>{loan.zum_customer_id}</p>
           </>
         )}
-        <div className="pagination-buttons">
-          <Button type="button" className="previous" onClick={previousPage}>
-            Go Back
-          </Button>
-          <Button onClick={onSubmit} className="next">
-            Continue
-          </Button>
-        </div>
+        {!showIframe ? (
+          <div className="pagination-buttons">
+            <Button type="button" className="previous" onClick={previousPage}>
+              Go Back
+            </Button>
+            <Button onClick={onSubmit} className="next">
+              Continue
+            </Button>
+          </div>
+        ) : (
+          <div className="pagination-buttons">
+            <Button type="button" className="previous" onClick={previousPage}>
+              Go Back
+            </Button>
+          </div>
+        )}
       </form>
     </Container>
   )
