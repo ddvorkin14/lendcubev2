@@ -7,6 +7,7 @@ const StepFour = (props) => {
   const { onSubmit, previousPage, loan } = props;
   const [recipientEmbedUrl, setRecipientEmbedUrl] = useState("");
   const [showFrame, setShowFrame] = useState(false);
+  console.log("Env Vars", process.env)
 
   const SignWell = ({
     async run() {
