@@ -38,6 +38,7 @@ const StepFour = (props) => {
         url: 'https://www.signwell.com/api/v1/document_templates/documents',
         headers: { 
           'Content-Type': 'application/json',
+          'X-Frame-Options': 'SAMEORIGIN',
           'X-Api-Key': process.env.REACT_APP_SIGNWELL_KEY
         },
         data: data

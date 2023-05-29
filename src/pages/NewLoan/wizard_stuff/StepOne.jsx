@@ -14,7 +14,7 @@ const StepOne = (props) => {
     { id: 1, label: 'First Name', field: 'first_name', tabIndex: 1, required: true, type: 'text' },
     { id: 2, label: 'Last Name', field: 'last_name', tabIndex: 2, required: true, type: 'text' },
     { id: 3, label: 'Customer Email', field: 'customer_email', tabIndex: 3, required: true, type: 'text' },
-    { id: 4, label: 'Phone #', field: 'customer_phone', tabIndex: 4, required: true, type: 'phone' },
+    { id: 4, label: 'Phone #', field: 'customer_phone', tabIndex: 4, required: true, type: 'text' },
     { id: 5, label: 'Date of Birth', field: 'dob', tabIndex: 5, required: true, type: 'date', minDate: false, disabled: false },
   ]
 

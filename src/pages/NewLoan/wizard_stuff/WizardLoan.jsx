@@ -53,10 +53,27 @@ const WizardLoan = (props) => {
   }
 
   const validatePageOne = () => {
-    if(loan.first_name?.length > 0 && loan.last_name?.length > 0 && loan.customer_email?.length > 0)
-      return true
-    else
+    if(loan.first_name?.length > 0 && loan.last_name?.length > 0 && loan.customer_email?.length > 0){
+      if(!validateEmail()){
+        AppToaster.show({ message: 'Customer email format must be valid to proceed', intent: 'danger' });
+        return false;
+      }
+
+      return true;
+    } else {
       AppToaster.show({ message: "All required fields must be filled out before continuing", intent: 'danger'});
+    }
+  }
+
+  const validateEmail = () => {
+    var validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+  
+    if (loan?.customer_email.match(validRegex)) {
+      return true;
+    } else {
+      return false;  
+    }
+  
   }
 
   const validatePageTwo = () => {
@@ -101,7 +118,7 @@ const WizardLoan = (props) => {
         determineDate={(date) => determineDate(date)}
         getMomentFormatter={(format) => getMomentFormatter(format)}
       />}
-      {page === 3 && <StepThree 
+      {page === 4 && <StepThree 
         onSubmit={() => nextPage()} 
         previousPage={() => prevPage()} 
         loan={loan} 
@@ -109,7 +126,7 @@ const WizardLoan = (props) => {
         determineDate={(date) => determineDate(date)}
         getMomentFormatter={(format) => getMomentFormatter(format)}
       />}
-      {page === 4 && <StepFour 
+      {page === 3 && <StepFour 
         onSubmit={() => nextPage()} 
         previousPage={() => prevPage()} 
         loan={loan} 
