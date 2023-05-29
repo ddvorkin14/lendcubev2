@@ -5,8 +5,6 @@ import { Container } from "react-bootstrap";
 const StepThree = (props) => {
   const { onSubmit, previousPage, loan, setLoan } = props;
   const [showIframe, setShowIframe] = useState(loan.zum_customer_id?.length === undefined && true);
-
-  const url_params = `&firstName=${loan?.first_name}&lastName=${loan?.last_name}&email=${loan?.customer_email}&hideShippingAddress=true&displayTermsAndCondition=true&getstatements=true`
   
   useEffect(() => {
     window.addEventListener('message', function(e) {
@@ -14,7 +12,6 @@ const StepThree = (props) => {
 
       if(data.step === 'CONNECTIONSUCCESSFULLYCOMPLETED'){
         setLoan({...loan, zum_customer_id: data.data.userid })
-        setShowIframe(false)
       }
 
       if(data.step === 'CONNECTORCLOSED')
@@ -39,7 +36,7 @@ const StepThree = (props) => {
             <Button type="button" className="previous" onClick={previousPage}>
               Go Back
             </Button>
-            <Button onClick={onSubmit} className="next">
+            <Button onClick={onSubmit} className="next" intent={"primary"}>
               Continue
             </Button>
           </div>

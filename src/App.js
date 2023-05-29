@@ -20,7 +20,7 @@ import Rates from "./pages/Rates/Rates";
 import NewRate from "./pages/Rates/NewRate";
 import Signup from "./pages/Auth/Signup";
 import Dashboard from "./pages/Dashboard/Dashboard";
-import WizardLoan from "./pages/NewLoan/WizardLoan";
+import WizardLoan from "./pages/NewLoan/wizard_stuff/WizardLoan";
 
 function App() {
   return (

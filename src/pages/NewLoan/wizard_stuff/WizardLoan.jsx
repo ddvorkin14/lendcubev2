@@ -4,8 +4,9 @@
 // 4. zum connect
 
 import { Position, Toaster } from "@blueprintjs/core";
+import { useNavigate } from "react-router-dom";
 import moment from "moment";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import StepFour from "./StepFour";
 import StepOne from "./StepOne";
 import StepThree from "./StepThree";
@@ -18,9 +19,18 @@ const AppToaster = Toaster.create({
   maxToasts: 2
 });
 
-const WizardLoan = () => {
+const WizardLoan = (props) => {
+  const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [loan, setLoan] = useState({ start_date: new Date(), frequency: 'Monthly', service_use: 'Personal' });
+
+  useEffect(() => {
+    if(localStorage?.token?.length < 10){
+      navigate("/login");
+      AppToaster.show({ message: 'You must be logged in to proceed', intent: 'danger' })
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const prevPage = () => setPage(page - 1)
   const nextPage = () => {

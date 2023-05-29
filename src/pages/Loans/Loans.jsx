@@ -119,7 +119,8 @@ const Loans = () => {
   ];
 
   const layoutActions = [
-    { id: 1, intent: 'success', label: 'Create New Loan', func: () => navigate("/loans/new")}
+    { id: 1, intent: 'success', label: 'Create New Loan', func: () => navigate("/loans/new") },
+    { id: 2, intent: 'primary', label: 'Begin Loan Wizard', func: () => navigate("/wizard") },
   ]
 
   const renderStore = (store, { handleClick, handleFocus, modifiers, query }) => {
@@ -174,8 +175,8 @@ const Loans = () => {
           <div style={{textAlign: 'left'}}>
             <Row>
               <Col lg={2}>
-                <Button intent={selectedFilter === 'all' ? 'primary' : 'default'} onClick={() => setSelectedFilter("all")} style={{marginLeft: 5}}>All</Button>  
-                <Button intent={selectedFilter === 'missing' ? 'primary' : 'default'} onClick={() => setSelectedFilter("missing")} style={{marginLeft: 5 }}>Missing Payments</Button>
+                <Button intent={selectedFilter === 'all' ? 'primary' : 'default'} onClick={() => setSelectedFilter("all")} style={{marginRight: 2 }}>All</Button>  
+                <Button intent={selectedFilter === 'missing' ? 'primary' : 'default'} onClick={() => setSelectedFilter("missing")} style={{marginLeft: 2 }}>Missing</Button>
               </Col>
               <Col>
                 <Select2
