@@ -11,6 +11,8 @@ import StepFour from "./StepFour";
 import StepOne from "./StepOne";
 import StepThree from "./StepThree";
 import StepTwo from "./StepTwo";
+import InterestPlanSelector from "./InterestPlanSelector";
+import axios from "axios";
 // import axios from "axios"
 
 const AppToaster = Toaster.create({
@@ -22,7 +24,67 @@ const AppToaster = Toaster.create({
 const WizardLoan = (props) => {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
-  const [loan, setLoan] = useState({ start_date: new Date(), frequency: 'Monthly', service_use: 'Personal' });
+  const [loan, setLoan] = useState({
+    start_date: new Date(), dob: new Date(), frequency: 'Monthly', service_use: 'Personal',
+    country: 'Canada', created_by_id: localStorage?.token?.split(":")[0], first_name: '', last_name: '',
+    address1: '', address2: '', city: '', province: '', customer_email: '', customer_phone: '', postalcode: '', amount: 0
+  });
+  const [loanPreview, setLoanPreview] = useState({});
+
+  const authHeader = {
+    headers: { 'Authorization': `Bearer ${localStorage.token}` }
+  }
+
+  const getPreviewData = async (id) => {
+    const route = "loans/" + id + "/preview";
+    return await axios.get(process.env.REACT_APP_API_URL + route, authHeader).then((resp) => {
+      setLoanPreview(resp.data);
+    });
+  }
+
+  const saveLoan = () => {
+    if(allFieldsValid()){
+      axios.post(process.env.REACT_APP_API_URL + "loans", { new_loan: loan }, authHeader).then((resp) => {
+        if(!!resp.data.errors){
+          Object.keys(resp.data.errors).map((key) => {
+            return AppToaster.show({ message: `Loan did not save due to: ${key.replace("_", " ") + ": " + resp.data.errors[key] }`, intent: 'danger' });
+          })
+        } else {
+          setLoan(resp.data.loan);
+          getPreviewData(resp.data.loan.id);
+        }
+      })
+    } else {
+      AppToaster.show({ message: 'Loan cannot be saved due to invalid data. Please refer to the checklist and try again.', intent: 'danger' });
+    }  
+  }
+  
+  const verifyCustomerDetails = () => {
+    return !!(loan?.first_name && 
+      loan?.last_name && 
+      loan?.customer_email && 
+      loan?.customer_phone)
+  }
+
+  const verifyCustomerAddress = () => {
+    return !!(loan?.address1 && 
+      loan?.city && 
+      loan?.postalcode && 
+      loan?.province && 
+      loan?.country)
+  }
+
+  const verifyLoanDetails = () => {
+    return !!(
+      loan?.frequency &&
+      loan?.service_use &&
+      loan?.amount
+    )
+  }
+
+  const allFieldsValid = () => {
+    return verifyCustomerDetails() && verifyCustomerAddress() && verifyLoanDetails()
+  }
 
   useEffect(() => {
     if(localStorage?.token?.length < 10){
@@ -32,10 +94,32 @@ const WizardLoan = (props) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const updateLoan = () => {
+    if(allFieldsValid()){
+      axios.patch(process.env.REACT_APP_API_URL + "loans/" + loan.id, { new_loan: loan }, authHeader).then((resp) => {
+        if(!!resp.data.errors){
+          Object.keys(resp.data.errors).map((key) => {
+            return AppToaster.show({ message: `Loan did not save due to: ${key.replace("_", " ") + ": " + resp.data.errors[key] }`, intent: 'danger' });
+          })
+        } else {
+          setLoan(resp.data.loan);
+          getPreviewData(resp.data.loan.id);
+        }
+      })
+    } else {
+      AppToaster.show({ message: 'Loan cannot be saved due to invalid field data. Please refer to the checklist and try again.', intent: 'danger' });
+    }
+  }
+
   const prevPage = () => setPage(page - 1)
   const nextPage = () => {
-    if(validate())
-      setPage(page + 1)
+    if(validate()){
+      if(page + 1 === 3 && loan.id === undefined)
+        saveLoan();
+      if(page + 1 === 3 && loan.id)
+        updateLoan();
+      setPage(page + 1);
+    }
   }
 
   const validate = () => {
@@ -43,9 +127,9 @@ const WizardLoan = (props) => {
       return validatePageOne();
     } else if(page === 2) {
       return validatePageTwo();
-    } else if(page === 3) {
+    } else if(page === 4) {
       return loan.zum_customer_id.length > 0;
-    } else if(page === 4){
+    } else if(page === 3){
       return true;
     } else {
       return false;
@@ -77,7 +161,7 @@ const WizardLoan = (props) => {
   }
 
   const validatePageTwo = () => {
-    if(loan.frequency?.length > 0 && loan.service_use?.length > 0 && loan.amount?.length > 0 && moment(loan.start_date).isValid())
+    if(loan.frequency?.length > 0 && loan.service_use?.length > 0 && loan.amount > 0 && moment(loan.start_date).isValid())
       return true;
     else
       AppToaster.show({ message: "All required fields must be filled out before continuing", intent: 'danger'});
@@ -118,7 +202,17 @@ const WizardLoan = (props) => {
         determineDate={(date) => determineDate(date)}
         getMomentFormatter={(format) => getMomentFormatter(format)}
       />}
-      {page === 4 && <StepThree 
+      {page === 3 && <InterestPlanSelector 
+        onSubmit={() => nextPage()} 
+        previousPage={() => prevPage()} 
+        loan={loan} 
+        setLoan={setLoan}
+        loanPreview={loanPreview}
+        determineDate={(date) => determineDate(date)}
+        getMomentFormatter={(format) => getMomentFormatter(format)}
+        getPreviewData={(id) => getPreviewData(id)}
+      />}
+      {page === 5 && <StepThree 
         onSubmit={() => nextPage()} 
         previousPage={() => prevPage()} 
         loan={loan} 
@@ -126,7 +220,7 @@ const WizardLoan = (props) => {
         determineDate={(date) => determineDate(date)}
         getMomentFormatter={(format) => getMomentFormatter(format)}
       />}
-      {page === 3 && <StepFour 
+      {page === 4 && <StepFour 
         onSubmit={() => nextPage()} 
         previousPage={() => prevPage()} 
         loan={loan} 

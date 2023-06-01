@@ -16,6 +16,11 @@ const StepOne = (props) => {
     { id: 3, label: 'Customer Email', field: 'customer_email', tabIndex: 3, required: true, type: 'text' },
     { id: 4, label: 'Phone #', field: 'customer_phone', tabIndex: 4, required: true, type: 'text' },
     { id: 5, label: 'Date of Birth', field: 'dob', tabIndex: 5, required: true, type: 'date', minDate: false, disabled: false },
+    { id: 6, label: 'Address 1', field: 'address1', tabIndex: 6, required: true, type: 'text' },
+    { id: 7, label: 'City', field: 'city', tabIndex: 7, required: true, type: 'text' },
+    { id: 8, label: 'Postal Code', field: 'postalcode', tabIndex: 8, required: true, type: 'text' },
+    { id: 9, label: 'Province', field: 'province', tabIndex: 9, required: true, type: 'text' },
+    { id: 10, label: 'Country', field: 'country', tabIndex: 10, required: true, type: 'text' },
   ]
 
   const onChange = (e) => {
@@ -26,7 +31,7 @@ const StepOne = (props) => {
 
   return (
     <Container id="step-one">
-      <h1 style={{ textAlign: 'left' }}>Step 1:</h1>
+      <h1 style={{ textAlign: 'left' }}>Customer Details:</h1>
       <Divider style={{ marginBottom: 10 }} />
       <form onSubmit={onSubmit}>
         <Row>

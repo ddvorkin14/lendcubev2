@@ -25,7 +25,7 @@ const StepTwo = (props) => {
 
   return (
     <Container id="step-two">
-      <h1 style={{ textAlign: 'left' }}>Step 2:</h1>
+      <h1 style={{ textAlign: 'left' }}>Loan Details:</h1>
       <form onSubmit={onSubmit}>
         <Row>
           {fields.map((input) => {

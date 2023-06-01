@@ -21,7 +21,7 @@ const StepThree = (props) => {
 
   return (
     <Container id="step-three">
-      <h1 style={{ textAlign: 'left' }}>Step 3:</h1>
+      <h1 style={{ textAlign: 'left' }}>Bank Details:</h1>
       <form onSubmit={onSubmit}>
         {showIframe ? (
           <iframe title="zum-connect" src={`${process.env.REACT_APP_ZUM_URL}${process.env.NODE_ENV === 'development' ? '&testinstitution=true' : ''}`} style={{width: '100%', height: 700}} />
@@ -37,7 +37,7 @@ const StepThree = (props) => {
               Go Back
             </Button>
             <Button onClick={onSubmit} className="next" intent={"primary"}>
-              Continue
+              Process Loan
             </Button>
           </div>
         ) : (

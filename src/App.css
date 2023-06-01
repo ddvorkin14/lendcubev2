@@ -78,6 +78,10 @@
   transition: 0.2s;
 }
 
+.selectedPlan {
+  box-shadow: 3px 3px 5px 0px green;
+}
+
 .boxshadowhover:hover {
   box-shadow: 3px 3px 5px 0px silver;
 }

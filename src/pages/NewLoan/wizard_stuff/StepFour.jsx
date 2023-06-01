@@ -2,13 +2,16 @@ import { Button } from "@blueprintjs/core";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
+import Safe from "react-safe";
 
 const StepFour = (props) => {
   const { onSubmit, previousPage, loan } = props;
   const [recipientEmbedUrl, setRecipientEmbedUrl] = useState("");
   const [showFrame, setShowFrame] = useState(false);
-  console.log("Env Vars", process.env)
-
+  const [showCompletedAgreement, setShowCompletedAgreement] = useState(false);
+  const [completedDoc, setCompletedDoc] = useState("");
+  const [signingCompletedSuccessfully, setSigningCompletedSuccessfully] = useState(false);
+  
   const SignWell = ({
     async run() {
       const data = {
@@ -63,21 +66,54 @@ const StepFour = (props) => {
     })
   }, []);
 
+  useEffect(() => {
+    if (window.SignWellEmbed && recipientEmbedUrl) {
+      try {
+        const embed = new window.SignWellEmbed({
+          url: recipientEmbedUrl,
+          events: {
+            completed: (e) => {
+              console.log("COMPLETED");
+            },
+            closed: (e) => {
+              console.log("CLOSED");
+              const options = {
+                method: 'GET',
+                headers: {
+                  accept: 'application/json',
+                  'X-Api-Key': process.env.REACT_APP_SIGNWELL_KEY
+                }
+              }
+              
+              axios.get("https://www.signwell.com/api/v1/documents/" + e.id + "/completed_pdf/?url_only=true", options).then((resp) => {
+                setCompletedDoc(resp.data.file_url);
+                setShowCompletedAgreement(true);
+              })
+            }
+          }
+        });
+
+        embed.open();
+      } catch (error) {
+        console.error("Error creating SignWellEmbed:", error);
+      }
+    }
+  }, [recipientEmbedUrl])
+
   
   return (
     <Container id="step-three">
-      <h1 style={{ textAlign: 'left' }}>Step 4:</h1>
+      <h1 style={{ textAlign: 'left' }}>Agreement Signing:</h1>
       <form onSubmit={onSubmit}>
-        {showFrame && (
-          <iframe title="sign-well" src={recipientEmbedUrl} target="_parent" frameborder="0" allowfullscreen></iframe>
-        )}
-        
+        {showFrame && <div id="iframe"></div>}
+        {showCompletedAgreement && <a href={completedDoc} target="_blank" rel="noreferrer">Downloan Signed Agreement</a>}
+
         <div className="pagination-buttons">
           <Button type="button" className="previous" onClick={previousPage}>
             Go Back
           </Button>
-          <Button onClick={onSubmit} className="next">
-            Process Loan
+          <Button onClick={onSubmit} className="next" intent={"primary"}>
+            Proceed
           </Button>
         </div>
       </form>
