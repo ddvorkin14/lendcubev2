@@ -38,6 +38,12 @@ const InterestPlan = (props) => {
     });
   }
 
+  const getTotalInterestPerPayment = () => {
+    const principal_payments = plan.reduce((a, b) => a + b.principal_amount, 0);
+    const total_payments = plan.reduce((a, b) => a + b.total_payment, 0);
+    return (total_payments - principal_payments).toFixed(2);
+  }
+
   return (
     <Card id={details[1]} className={`${getSelectedPlan(details)}`} style={{ minHeight: 110, }}>
       <Card.Body>
@@ -45,9 +51,10 @@ const InterestPlan = (props) => {
           <Col style={{ textAlign: "left" }}>
             <h3>{interestTime(details[0])}</h3>
             <h4>{interestAmount(details[0])}</h4>
-            <p style={{marginBottom: 0}}><strong>Payment Amount:</strong> ${(plan[0]['total_payment']).toFixed(2)}</p>
-            <p style={{marginBottom: 0}}><strong>Total Balance: </strong>${(plan[0]['total_payment'] + plan[0]['remaining_balance']).toFixed(2)}</p>
-            <p style={{marginBottom: 0}}><strong>Total Interest: </strong>${(plan.reduce((a, b) => a + b.principal_amount, 0)).toFixed(2)}</p>
+            <p style={{marginBottom: 0}}><strong>Total Payments:</strong> {plan.length}</p>
+            <p style={{marginBottom: 0}}><strong>Total Interest: </strong>${getTotalInterestPerPayment()}</p>
+            <p style={{marginBottom: 0}}><strong>Last Payment Due: </strong>{new Date(plan[plan.length - 1].date).toDateString()}</p>
+            
             {loading && (
               <div  style={{position: "absolute", bottom: -5, right: 20 }}>
                 <p>{loader}</p>

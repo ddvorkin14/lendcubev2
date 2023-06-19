@@ -14,7 +14,9 @@ const StepFour = (props) => {
   useEffect(() => {
     console.log("Preview: ", loanPreview);
     console.log("Loan: ", loan);
-    let planID = loanPreview?.applicable_plans[loan?.selected_rate][1];
+    // let planId = loanPreview?.applicable_plans.map((p) => parseFloat(p[0].split(" | ")[0]))
+    let planIndex = loanPreview.applicable_plans.map((p) => parseFloat(p[0].split(" | ")[0])).indexOf(loan.selected_rate);
+    let planID = loanPreview?.applicable_plans[planIndex][1];
 
     setSelectedPlan(loanPreview.applicable_plans_plans[planID]);
   }, []);
