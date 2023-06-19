@@ -78,7 +78,7 @@ const StepFour = (props) => {
         }
       })
     }
-  }, []);
+  }, [selectedPlan]);
 
   useEffect(() => {
     if (window.SignWellEmbed && recipientEmbedUrl) {
