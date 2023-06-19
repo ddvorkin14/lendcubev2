@@ -22,7 +22,7 @@ const StepFour = (props) => {
   const SignWell = ({
     async run() {
       const data = {
-        test_mode: process.env === 'development',
+        test_mode: process.env.NODE_ENV === 'development',
         template_id: process.env.REACT_APP_SIGNWELL_TEMPLATE_ID,
         embedded_signing: true,
         template_fields: [
