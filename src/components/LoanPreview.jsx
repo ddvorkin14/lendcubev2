@@ -59,7 +59,7 @@ const LoanPreview = (props) => {
       
       <Tabs defaultActiveKey="paymentPreview" id="uncontrolled-tab-example" className="mb-3">
         <Tab eventKey="paymentPreview" title="Payment Preview">
-          {!loading && (
+          {!loading && loanPreview['payment_plan'] && (
             <Row className={loading ? Classes.SKELETON : ''}>
               <Col>
                 <strong>First Payment Date</strong>
