@@ -2,6 +2,7 @@ import { Button } from "@blueprintjs/core";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
+import moment from "moment";
 
 const StepFour = (props) => {
   const { onSubmit, previousPage, loan, loanPreview } = props;
@@ -14,7 +15,7 @@ const StepFour = (props) => {
   useEffect(() => {
     console.log("Preview: ", loanPreview);
     console.log("Loan: ", loan);
-    // let planId = loanPreview?.applicable_plans.map((p) => parseFloat(p[0].split(" | ")[0]))
+    
     let planIndex = loanPreview.applicable_plans.map((p) => parseFloat(p[0].split(" | ")[0])).indexOf(loan.selected_rate);
     let planID = loanPreview?.applicable_plans[planIndex][1];
 
@@ -34,7 +35,7 @@ const StepFour = (props) => {
           { api_id: 'Loan Amount', value: loan?.amount },
           { api_id: 'Frequency of Payment', value: loan?.frequency },
           { api_id: 'Interest Rate', value: loan?.selected_rate },
-          { api_id: 'Day of payment', value: new Date(selectedPlan[0].date).toDateString() },
+          { api_id: 'Day of payment', value: moment(selectedPlan[0].date).format("DD") },
           { api_id: 'Payment Amount', value: selectedPlan[0].total_payment.toFixed(2) },
           { api_id: 'First Payment Date', value: new Date(selectedPlan[0].date).toDateString() },
           { api_id: 'Last Payment Date', value: new Date(selectedPlan[selectedPlan.length - 1].date).toDateString() },
