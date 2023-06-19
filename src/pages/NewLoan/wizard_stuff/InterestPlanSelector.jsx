@@ -2,9 +2,37 @@ import { Button } from "@blueprintjs/core";
 import React, { useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import InterestPlan from "../../../components/InterestPlan";
+import RangeSlider from 'react-bootstrap-range-slider';
+
+const SliderWithInputFormControl = (loan, setLoan, updateLoan) => {
+  const [newVal, setNewVal] = useState(loan?.amount);
+
+  const getNewPlans = () => {
+    updateLoan();
+
+  }
+
+  return (
+    <Row>
+      <Col xs="8">
+        <RangeSlider
+          min={500}
+          max={10000}
+          value={newVal}
+          onChange={e => setNewVal(e.target.value)}
+          onAfterChange={e => setLoan({ ...loan, amount: newVal }) }
+        />
+      </Col>
+      <Col xs="4">
+        <input style={{ width: 80, float: 'left', textAlign: 'right' }} value={loan?.amount} />
+        <Button style={{ width: 120 }} onClick={() => getNewPlans()} intent="success">Get New Plans</Button>
+      </Col>
+    </Row>
+  );
+};
 
 const InterestPlanSelector = (props) => {
-  const { onSubmit, previousPage, loan, setLoan, loanPreview } = props;
+  const { onSubmit, previousPage, loan, setLoan, loanPreview, updateLoan } = props;
   const [selectedPlan, setSelectedPlan] = useState(null);
 
   useEffect(() => {
@@ -20,6 +48,7 @@ const InterestPlanSelector = (props) => {
   return (
     <Container id="step-one">
       <h1 style={{ textAlign: 'left' }}>Interest Plan Selection:</h1>
+      {SliderWithInputFormControl(loan, setLoan, updateLoan)}
       <form onSubmit={onSubmit}>
         <Row>
           {Object.keys(loanPreview).length > 0 && (

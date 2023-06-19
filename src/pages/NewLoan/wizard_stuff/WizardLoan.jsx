@@ -38,7 +38,11 @@ const WizardLoan = (props) => {
   const getPreviewData = async (id) => {
     const route = "loans/" + id + "/preview";
     return await axios.get(process.env.REACT_APP_API_URL + route, authHeader).then((resp) => {
-      setLoanPreview(resp.data);
+      if(resp.data.code === 'NO_INTEREST_RULE'){
+        AppToaster.show({ message: 'No available interest rates for this loan amount', intent: 'danger' });
+      } else {
+        setLoanPreview(resp.data);
+      }
     });
   }
 
@@ -207,6 +211,7 @@ const WizardLoan = (props) => {
         previousPage={() => prevPage()} 
         loan={loan} 
         setLoan={setLoan}
+        updateLoan={() => updateLoan()}
         loanPreview={loanPreview}
         determineDate={(date) => determineDate(date)}
         getMomentFormatter={(format) => getMomentFormatter(format)}
