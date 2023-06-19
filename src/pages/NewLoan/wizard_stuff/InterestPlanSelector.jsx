@@ -1,24 +1,11 @@
 import { Button } from "@blueprintjs/core";
-import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Card, Col, Container, Row } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
+import InterestPlan from "../../../components/InterestPlan";
 
 const InterestPlanSelector = (props) => {
-  const { onSubmit, previousPage, loan, setLoan, loanPreview, getPreviewData } = props;
+  const { onSubmit, previousPage, loan, setLoan, loanPreview } = props;
   const [selectedPlan, setSelectedPlan] = useState(null);
-  const [assignment, setAssignment] = useState("");
-
-  const authHeader = {
-    headers: { 'Authorization': `Bearer ${localStorage.token}` }
-  }
-
-  const setNewPlan = (plan) => {
-    setSelectedPlan(null);
-    axios.post(process.env.REACT_APP_API_URL + "loans/" + loan.id + "/set_new_plan", { rule_id: plan[1] }, authHeader).then((resp) => {
-      setLoan(resp.data);
-      // getPreviewData(loan.id);
-    });
-  }
 
   useEffect(() => {
     setSelectedPlan(loan.selected_rate);
@@ -26,7 +13,7 @@ const InterestPlanSelector = (props) => {
 
   const getSelectedPlan = (plan) => {
     if(selectedPlan){
-      return selectedPlan === parseFloat(plan[0].split(" | ")[0]) ? 'selectedPlan' : ''
+      return selectedPlan === parseFloat(plan[0].split(" | ")[0]) ? 'selectedPlan' : null
     }
   }
 
@@ -38,14 +25,21 @@ const InterestPlanSelector = (props) => {
           {Object.keys(loanPreview).length > 0 && (
             <>
               <Row>
-                {loanPreview.applicable_plans.map((plan) => {
+                {Object.keys(loanPreview.applicable_plans_plans).map((planId) => {
+                  let plan = loanPreview.applicable_plans_plans[planId];
+                  let planDetails = loanPreview.applicable_plans.filter((plan) => plan[1] == planId)[0];
+
                   return (
-                    <Col lg="6" xs="12" className="mb-2">
-                      <Card id={plan[1]} className={`boxshadowhover ${getSelectedPlan(plan)}`} style={{ cursor: 'pointer', minHeight: 110, }} onClick={() => setNewPlan(plan)}>
-                        <Card.Body>
-                          <strong>{plan[0]}</strong>
-                        </Card.Body>
-                      </Card>
+                    <Col lg="12" xs="12" className="mb-2">
+                      <InterestPlan 
+                        plan={plan} 
+                        details={planDetails} 
+                        selectedPlan={selectedPlan} 
+                        setSelectedPlan={setSelectedPlan} 
+                        getSelectedPlan={getSelectedPlan} 
+                        setLoan={setLoan} 
+                        loan={loan} 
+                      />
                     </Col>
                   )
                 })}

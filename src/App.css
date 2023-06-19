@@ -79,7 +79,7 @@
 }
 
 .selectedPlan {
-  box-shadow: 3px 3px 5px 0px green;
+  box-shadow: 3px 3px 5px 0px lightgrey;
 }
 
 .boxshadowhover:hover {
@@ -145,6 +145,12 @@
 .container {
   margin-top: 10px;
 }
+
+.chart-container {
+  height: 200px;
+  width: 100%;
+}
+
 @media only screen and (max-width: 600px) {
   
   .login-form {

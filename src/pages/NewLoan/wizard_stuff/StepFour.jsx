@@ -2,15 +2,20 @@ import { Button } from "@blueprintjs/core";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
-import Safe from "react-safe";
 
 const StepFour = (props) => {
-  const { onSubmit, previousPage, loan } = props;
+  const { onSubmit, previousPage, loan, loanPreview } = props;
   const [recipientEmbedUrl, setRecipientEmbedUrl] = useState("");
   const [showFrame, setShowFrame] = useState(false);
   const [showCompletedAgreement, setShowCompletedAgreement] = useState(false);
   const [completedDoc, setCompletedDoc] = useState("");
-  const [signingCompletedSuccessfully, setSigningCompletedSuccessfully] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState();
+
+  useEffect(() => {
+    let planID = loanPreview?.applicable_plans[loan?.selected_rate][1];
+
+    setSelectedPlan(loanPreview.applicable_plans_plans[planID]);
+  }, []);
   
   const SignWell = ({
     async run() {
@@ -24,6 +29,11 @@ const StepFour = (props) => {
           { api_id: 'Borrower Initials', value: `${loan?.first_name.slice(0,1)}. ${loan?.last_name.slice(0,1)}.` },
           { api_id: 'Loan Amount', value: loan?.amount },
           { api_id: 'Frequency of Payment', value: loan?.frequency },
+          { api_id: 'Interest Rate', value: loan?.selected_rate },
+          { api_id: 'Day of payment', value: new Date(selectedPlan[0].date).toDateString() },
+          { api_id: 'Payment Amount', value: selectedPlan[0].total_payment.toFixed(2) },
+          { api_id: 'First Payment Date', value: new Date(selectedPlan[0].date).toDateString() },
+          { api_id: 'Last Payment Date', value: new Date(selectedPlan[selectedPlan.length - 1].date).toDateString() },
         ],
         recipients: [
           {
@@ -53,17 +63,19 @@ const StepFour = (props) => {
   })
 
   useEffect(() => {
-    SignWell.run().then((resp) => {
-      if(Object.keys(resp.data).length > 0){
-        const recipient = resp.data.recipients.filter((recipient) => {
-          if(recipient.id === loan?.customer_email)
-            return recipient;
-        })[0];
-        
-        setRecipientEmbedUrl(recipient.embedded_signing_url);
-        setShowFrame(true);
-      }
-    })
+    if(selectedPlan){
+      SignWell.run().then((resp) => {
+        if(Object.keys(resp.data).length > 0){
+          const recipient = resp.data.recipients.filter((recipient) => {
+            if(recipient.id === loan?.customer_email)
+              return recipient;
+          })[0];
+          
+          setRecipientEmbedUrl(recipient.embedded_signing_url);
+          setShowFrame(true);
+        }
+      })
+    }
   }, []);
 
   useEffect(() => {
@@ -100,13 +112,16 @@ const StepFour = (props) => {
     }
   }, [recipientEmbedUrl])
 
+  useEffect(() => {
+
+  }, [completedDoc]);
   
   return (
     <Container id="step-three">
       <h1 style={{ textAlign: 'left' }}>Agreement Signing:</h1>
       <form onSubmit={onSubmit}>
         {showFrame && <div id="iframe"></div>}
-        {showCompletedAgreement && <a href={completedDoc} target="_blank" rel="noreferrer">Downloan Signed Agreement</a>}
+        {showCompletedAgreement && <a href={completedDoc} target="_blank" rel="noreferrer">Download Signed Agreement</a>}
 
         <div className="pagination-buttons">
           <Button type="button" className="previous" onClick={previousPage}>

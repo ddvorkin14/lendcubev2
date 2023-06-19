@@ -223,7 +223,8 @@ const WizardLoan = (props) => {
       {page === 4 && <StepFour 
         onSubmit={() => nextPage()} 
         previousPage={() => prevPage()} 
-        loan={loan} 
+        loan={loan}
+        loanPreview={loanPreview}
         setLoan={setLoan} 
         determineDate={(date) => determineDate(date)}
         getMomentFormatter={(format) => getMomentFormatter(format)}
