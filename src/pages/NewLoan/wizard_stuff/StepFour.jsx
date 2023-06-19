@@ -12,6 +12,8 @@ const StepFour = (props) => {
   const [selectedPlan, setSelectedPlan] = useState();
 
   useEffect(() => {
+    console.log("Preview: ", loanPreview);
+    console.log("Loan: ", loan);
     let planID = loanPreview?.applicable_plans[loan?.selected_rate][1];
 
     setSelectedPlan(loanPreview.applicable_plans_plans[planID]);
@@ -20,7 +22,7 @@ const StepFour = (props) => {
   const SignWell = ({
     async run() {
       const data = {
-        test_mode: true,
+        test_mode: process.env === 'development',
         template_id: process.env.REACT_APP_SIGNWELL_TEMPLATE_ID,
         embedded_signing: true,
         template_fields: [
