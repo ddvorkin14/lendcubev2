@@ -24,7 +24,7 @@ const SliderWithInputFormControl = (loan, setLoan, updateLoan) => {
         />
       </Col>
       <Col xs="4">
-        <input style={{ width: 80, float: 'left', textAlign: 'right' }} value={loan?.amount} />
+        <input style={{ width: 80, float: 'left', textAlign: 'right' }} value={loan?.amount} onChange={e => setLoan({ ...loan, amount: e.target.value }) } />
         <Button style={{ width: 120 }} onClick={() => getNewPlans()} intent="success">Get New Plans</Button>
       </Col>
     </Row>
