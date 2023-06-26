@@ -76,7 +76,7 @@ const InterestPlanSelector = (props) => {
             </>
           )}
         </Row>
-        <div className="pagination-buttons">
+        <div className="pagination-buttons" style={{marginBottom: 100, marginTop: 20}}>
           <Button type="button" className="previous" onClick={previousPage}>
             Go Back
           </Button>

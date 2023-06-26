@@ -106,7 +106,7 @@ const Loan = () => {
   }
 
   const createTransaction = () => {
-    axios.post("https://app.lendcube.ca/loans/" + id + "/sync_zum").then((resp) => {
+    axios.post(process.env.REACT_APP_API_URL + "loans/" + id + "/sync_zum", {}, authHeader).then((resp) => {
       console.log("Response: ", resp);
     })
   }

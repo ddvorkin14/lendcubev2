@@ -102,10 +102,12 @@ const StepFour = (props) => {
                 }
               }
               
-              axios.get("https://www.signwell.com/api/v1/documents/" + e.id + "/completed_pdf/?url_only=true", options).then((resp) => {
-                setCompletedDoc(resp.data.file_url);
-                setShowCompletedAgreement(true);
-              })
+              setTimeout(() => {
+                axios.get("https://www.signwell.com/api/v1/documents/" + e.id + "/completed_pdf/?url_only=true", options).then((resp) => {
+                  setCompletedDoc(resp.data.file_url);
+                  setShowCompletedAgreement(true);
+                })
+              }, 500);
             }
           }
         });
@@ -126,6 +128,7 @@ const StepFour = (props) => {
       <h1 style={{ textAlign: 'left' }}>Agreement Signing:</h1>
       <form onSubmit={onSubmit}>
         {showFrame && <div id="iframe"></div>}
+        {!showFrame && !showCompletedAgreement && <h3>Loading Document link...</h3>}
         {showCompletedAgreement && <a href={completedDoc} target="_blank" rel="noreferrer">Download Signed Agreement</a>}
 
         <div className="pagination-buttons">
