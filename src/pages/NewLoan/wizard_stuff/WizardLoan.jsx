@@ -13,6 +13,7 @@ import StepThree from "./StepThree";
 import StepTwo from "./StepTwo";
 import InterestPlanSelector from "./InterestPlanSelector";
 import axios from "axios";
+import { useParams } from "react-router-dom";
 // import axios from "axios"
 
 const AppToaster = Toaster.create({
@@ -30,9 +31,27 @@ const WizardLoan = (props) => {
     address1: '', address2: '', city: '', province: '', customer_email: '', customer_phone: '', postalcode: '', amount: 0
   });
   const [loanPreview, setLoanPreview] = useState({});
+  const [loading, setLoading] = useState(true)
+
+  const { id } = useParams();
+
+  useEffect(() => {
+    if (id) {
+      setLoading(true)
+      continueLoan(id);
+    }
+  }, []);
 
   const authHeader = {
     headers: { 'Authorization': `Bearer ${localStorage.token}` }
+  }
+
+  const continueLoan = async (id) => {
+    const route = "loans/" + id;
+    return await axios.get(process.env.REACT_APP_API_URL + route, authHeader).then((resp) => {
+      setLoan(resp.data);
+      setLoading(false);
+    });
   }
 
   const getPreviewData = async (id) => {
@@ -195,6 +214,7 @@ const WizardLoan = (props) => {
         onSubmit={() => nextPage()} 
         loan={loan} 
         setLoan={setLoan} 
+        loading={loading}
         determineDate={(date) => determineDate(date)}
         getMomentFormatter={(format) => getMomentFormatter(format)}
       />}

@@ -107,7 +107,7 @@ const Loan = () => {
 
   const createTransaction = () => {
     axios.post(process.env.REACT_APP_API_URL + "loans/" + id + "/sync_zum", {}, authHeader).then((resp) => {
-      console.log("Response: ", resp);
+      AppToaster.show({ message: "Transactions created successfully", intent: 'success' });
     })
   }
 
@@ -174,6 +174,9 @@ const Loan = () => {
                 )}
                 {localStorage?.current_user_role === 'admin' && (
                   <Button intent="danger" onClick={() => deleteLoan()} style={{marginLeft: 10}}>Destroy</Button>
+                )}
+                {Boolean(loan?.zum_customer_id) && (
+                  <Button intent="primary" onClick={() => navigate(`/wizard/${loan?.id}`) } style={{marginLeft: 10}}>Continue Wizard</Button>  
                 )}
               </div>
             </Card.Header>

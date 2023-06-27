@@ -42,6 +42,7 @@ function App() {
         <Route path="/rates" element={<Rates />} />
         <Route path="/rates/new" element={<NewRate />} />
         <Route path="/wizard" element={<WizardLoan />} />
+        <Route path="/wizard/:id" element={<WizardLoan />} />
         <Route path="/" element={<Loans />} />
       </Routes>
     </div>

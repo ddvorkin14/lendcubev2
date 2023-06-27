@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Card, Row, Col } from "react-bootstrap";
 import DataTable from 'react-data-table-component';
 import Moment from 'moment';
-import { Classes, Button, MenuItem, Toaster, Position } from "@blueprintjs/core";
+import { Classes, Button, MenuItem, Toaster, Position, Icon } from "@blueprintjs/core";
 import { Tooltip2, Classes as Classes2 } from "@blueprintjs/popover2";
 import { useNavigate } from "react-router-dom";
 import CurrencyFormat from "react-currency-format";
@@ -108,14 +108,16 @@ const Loans = () => {
         </Tooltip2>
       )
     }, sortable: false }, 
-    { name: 'ID', width: '100px', selector: row => `${row.id}`, sortable: false },
+    { name: 'ZUM', width: '75px', selector: row => {
+      return Boolean(row.zum_customer_id) ? <Icon icon="confirm" intent="success" /> : <Icon icon="error" intent="danger"/>
+    }, sortable: true },
+    { name: 'ID', width: '90px', selector: row => `${row.id}`, sortable: false },
     { name: 'First Name', selector: row => row.first_name, sortable: true },
     { name: 'Last Name', selector: row => row.last_name, sortable: true },
-    { name: 'Email', width: '250px', selector: row => row.customer_email, sortable: true },
-    { name: 'Country', width: '100px', selector: row => row.country, sortable: true },
-    { name: 'Amount', width: '120px', selector: row => <CurrencyFormat value={row.amount} displayType={'text'} decimalScale={2} fixedDecimalScale={true} thousandSeparator={true} prefix={'$'} />, value: row => row.amount, sortable: true },
+    { name: 'Email', width: '240px', selector: row => row.customer_email, sortable: true },
+    { name: 'Amount', width: '100px', selector: row => <CurrencyFormat value={row.amount} displayType={'text'} decimalScale={2} fixedDecimalScale={true} thousandSeparator={true} prefix={'$'} />, value: row => row.amount, sortable: true },
     { name: 'Frequency', width: '110px', selector: row => row.frequency, sortable: true },
-    { name: 'Created', width: '170px', selector: row => `${Moment(row.created_at).format("L LT")}`, sortable: true }
+    { name: 'Created', width: '170px', selector: row => `${Moment(row.created_at).format("L LT")}`, sortable: true },
   ];
 
   const layoutActions = [

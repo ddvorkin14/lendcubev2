@@ -5,10 +5,7 @@ import { DateInput } from "@blueprintjs/datetime";
 import TextSelectDate from "../../../components/TextSelectDate";
 
 const StepOne = (props) => {
-  const { onSubmit, loan, setLoan, determineDate, getMomentFormatter } = props;
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => setLoading(false), []);
+  const { onSubmit, loan, setLoan, determineDate, getMomentFormatter, loading } = props;  
 
   const fields = [
     { id: 1, label: 'First Name', field: 'first_name', tabIndex: 1, required: true, type: 'text' },
