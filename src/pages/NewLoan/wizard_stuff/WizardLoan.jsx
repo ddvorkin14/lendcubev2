@@ -40,6 +40,7 @@ const WizardLoan = (props) => {
       setLoading(true)
       continueLoan(id);
     }
+    setLoading(false);
   }, []);
 
   const authHeader = {
