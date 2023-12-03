@@ -70,10 +70,10 @@ const MissingPayments = (props) => {
   }
 
   var config = {
-    method: 'post', url: process.env.REACT_APP_ZUM_ENDPOINT + 'Authorize',
+    method: 'post', url: process.env.REACT_APP_ZUM_API_URL + '/Authorize',
     headers: { 'Content-Type': 'application/json' }, 
     data: JSON.stringify({
-      "Username": process.env.REACT_APP_ZUM_ID, 
+      "Username": process.env.REACT_APP_ZUM_USERNAME,
       "Password": process.env.REACT_APP_ZUM_PASSWORD
     })
   };
@@ -103,7 +103,7 @@ const MissingPayments = (props) => {
 
       var transactionConfig = {
         method: 'post',
-        url: process.env.REACT_APP_ZUM_ENDPOINT + 'transaction/filter',
+        url: process.env.REACT_APP_ZUM_API_URL + '/transaction/filter',
         headers: { 
           'Authorization': 'Bearer ' + token, 
           'Content-Type': 'application/json'

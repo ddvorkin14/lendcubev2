@@ -5,7 +5,7 @@ import DataTable from 'react-data-table-component';
 import Moment from 'moment';
 import { Classes, Button, MenuItem, Toaster, Position, Icon } from "@blueprintjs/core";
 import { Tooltip2, Classes as Classes2 } from "@blueprintjs/popover2";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CurrencyFormat from "react-currency-format";
 import Layout from "../../components/Layout";
 import { Select2 } from "@blueprintjs/select";
@@ -51,12 +51,31 @@ const Loans = () => {
   useEffect(() => {
     setLoading(true)
     if(localStorage?.token?.length > 10){
-      selectedFilter === 'all' ? getLoans() : getMissingLoans();
+      if(selectedFilter === 'all'){
+        getLoans();
+      } else if(selectedFilter === 'not-connected'){
+        getNotConnectedLoans();
+      } else {
+        getMissingLoans();
+      }
     } else {
       navigate("/login");
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query, selectedFilter]);
+
+  const getNotConnectedLoans = () => {
+    axios.get(process.env.REACT_APP_API_URL + 'loans/not_connected', authHeader).then((resp) => {
+      setData(resp.data.loans.sort((a, b) => b.id - a.id));
+      setLoading(false);
+      setDataLoading(false);
+    }).catch(function (error) {
+      if(error.code === "ERR_BAD_REQUEST"){
+        localStorage.token = null;
+        navigate("/login");
+      }
+    });
+  }
 
   const getLoans = () => {
     axios.get(process.env.REACT_APP_API_URL + 'loans?search=' + query, authHeader).then((resp) => {
@@ -74,7 +93,7 @@ const Loans = () => {
 
   const getMissingLoans = () => {
     axios.get(process.env.REACT_APP_API_URL + 'loans/missed_payment_loans', authHeader).then((resp) => {
-      setData(resp.data.loan.sort((a, b) => b.id - a.id));
+      setData(resp.data.loans.sort((a, b) => b.id - a.id));
       setLoading(false);
       setDataLoading(false);
     }).catch(function (error) {
@@ -95,12 +114,11 @@ const Loans = () => {
   }
 
   const columns = [
-    { name: '', width: '60px', selector: row => <Button minimal={true} icon="eye-open" onClick={() => navigate("/loans/" + row.id) } />, sortable: false },
     { name: '', width: '60px', selector: row => {
       return(
         <Tooltip2 
           placement="top" 
-          content="Missing Payment Email!"
+          content={<div style={{ marginBottom: 5}}>Missing Payment Email!</div>}
           className={Classes2.TOOLTIP2_INDICATOR}
           usePortal={false}
           intent="success">
@@ -109,9 +127,9 @@ const Loans = () => {
       )
     }, sortable: false }, 
     { name: 'ZUM', width: '75px', selector: row => {
-      return Boolean(row.zum_customer_id) ? <Icon icon="confirm" intent="success" /> : <Icon icon="error" intent="danger"/>
-    }, sortable: true },
-    { name: 'ID', width: '90px', selector: row => `${row.id}`, sortable: false },
+      return row.zum_customer_id !== 'N/A' ? <Icon icon="confirm" intent="success" /> : <Icon icon="error" intent="danger"/>
+    }, sortable: false },
+    { name: 'ID', width: '90px', selector: row => <Link to={"/loans/" + row.id}>000-{row.id}</Link>, sortable: false },
     { name: 'First Name', selector: row => row.first_name, sortable: true },
     { name: 'Last Name', selector: row => row.last_name, sortable: true },
     { name: 'Email', width: '240px', selector: row => row.customer_email, sortable: true },
@@ -176,11 +194,10 @@ const Loans = () => {
         <Card.Body>
           <div style={{textAlign: 'left'}}>
             <Row>
-              <Col lg={2}>
+              <Col lg={6} style={{display: 'flex'}}>
                 <Button intent={selectedFilter === 'all' ? 'primary' : 'default'} onClick={() => setSelectedFilter("all")} style={{marginRight: 2 }}>All</Button>  
-                <Button intent={selectedFilter === 'missing' ? 'primary' : 'default'} onClick={() => setSelectedFilter("missing")} style={{marginLeft: 2 }}>Missing</Button>
-              </Col>
-              <Col>
+                <Button intent={selectedFilter === 'missing' ? 'primary' : 'default'} onClick={() => setSelectedFilter("missing")} style={{marginRight: 2 }}>Missing Payments</Button>
+                <Button intent={selectedFilter === 'not-connected' ? 'primary' : 'default'} onClick={() => setSelectedFilter("not-connected")} style={{marginRight: 2 }}>Not Connected</Button>
                 <Select2
                   items={stores}
                   itemPredicate={filterStores}
