@@ -148,7 +148,7 @@ const MissingPayments = (props) => {
           row.transactionDate = tran[0].CreatedAt
           row.transactionStatus = tran[0].TransactionStatus
         } else if(new Date() > rowDate){
-          row.transactionStatus = "Late"
+          row.transactionStatus = "Failed"
         } else {
           row.transactionStatus = "Upcoming"
         }
