@@ -40,6 +40,8 @@ const MissingPayments = (props) => {
     if(row.transactionStatus === 'Upcoming'){
       return <h5 style={{ minWidth: 100 }}><Badge style={{ minWidth: 100 }} bg="primary">Up-Coming</Badge></h5>
     }
+
+    return <h5 style={{ minWidth: 100 }}><Badge style={{ minWidth: 100 }} bg="default">{row.transactionStatus}</Badge></h5>
   }
 
   const currencyFormat = (amount) => {
