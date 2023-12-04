@@ -70,7 +70,7 @@ const MissingPayments = (props) => {
   }
 
   var config = {
-    method: 'post', url: process.env.REACT_APP_ZUM_API_URL + '/Authorize',
+    method: 'post', url: 'https://api-app.zumrails.com/api/Authorize',
     headers: { 'Content-Type': 'application/json' }, 
     data: JSON.stringify({
       "Username": process.env.REACT_APP_ZUM_USERNAME,
@@ -103,7 +103,7 @@ const MissingPayments = (props) => {
 
       var transactionConfig = {
         method: 'post',
-        url: process.env.REACT_APP_ZUM_API_URL + '/transaction/filter',
+        url: 'https://api-app.zumrails.com/api/transaction/filter',
         headers: { 
           'Authorization': 'Bearer ' + token, 
           'Content-Type': 'application/json'
