@@ -21,6 +21,8 @@ import NewRate from "./pages/Rates/NewRate";
 import Signup from "./pages/Auth/Signup";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import WizardLoan from "./pages/NewLoan/wizard_stuff/WizardLoan";
+import ChangePassword from "./pages/Auth/ChangePassword";
+import ForgotPassword from "./pages/Auth/ForgotPassword";
 
 function App() {
   return (
@@ -32,6 +34,7 @@ function App() {
         <Route path="/stores/new" element={<CreateStore edit={false} />} />
         <Route path="/users" element={<Users />} />
         <Route path="/account" element={<Account />} />
+        <Route path="/account/change_password" exact element={<ChangePassword />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/loans/:id/edit" element={<NewLoan edit={true} />} />
@@ -43,6 +46,7 @@ function App() {
         <Route path="/rates/new" element={<NewRate />} />
         <Route path="/wizard" element={<WizardLoan />} />
         <Route path="/wizard/:id" element={<WizardLoan />} />
+        <Route path="/forgot_password" element={<ForgotPassword />} />
         <Route path="/" element={<Loans />} />
       </Routes>
     </div>

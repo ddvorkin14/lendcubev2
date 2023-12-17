@@ -55,7 +55,7 @@ const Menu = () => {
           <>
             <>
               <Button className={Classes.MINIMAL} icon="log-in" text="Login" onClick={() => routeChange('login')} />
-              <Button className={Classes.MINIMAL} icon="plus" text="Sign Up" onClick={() => routeChange('signup')} />
+              {/* <Button className={Classes.MINIMAL} icon="plus" text="Sign Up" onClick={() => routeChange('signup')} /> */}
             </>
           </>
         )}

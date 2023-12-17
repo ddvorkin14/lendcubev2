@@ -38,9 +38,13 @@ const Account = () => {
   ];
 
   const layoutActions = [
-    { id: 1, intent: 'warning', label: 'Change Password', func: () => console.log("Forgot Password") },
+    { id: 1, intent: 'warning', label: 'Change Password', func: () => changePassword() },
     { id: 2, intent: 'success', label: 'Show Loans', func: () => console.log("Show Loans") }
   ]
+
+  const changePassword = () => {
+    navigate("/account/change_password");
+  }
 
   return(
     <Layout showBreadcrumbs={false} headerTitle="Account Details" actions={layoutActions} loading={false}>

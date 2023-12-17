@@ -38,7 +38,7 @@ const Login = () => {
       <form onSubmit={(e) => onSubmit(e)} className="login-form">
         <h3>Sign In</h3>
         <div className="mb-3">
-          <label>Email address</label>
+          <label style={{float: 'left'}}>Email address</label>
           <input
             type="email"
             className="form-control"
@@ -46,20 +46,26 @@ const Login = () => {
           />
         </div>
         <div className="mb-3">
-          <label>Password</label>
+          <label style={{float: 'left'}}>Password</label>
           <input
             type="password"
             className="form-control"
             placeholder="Enter password"
           />
         </div>
-        
+
         <div className="d-grid">
           <button type="submit" className="btn btn-primary">
-            Submit
+            Login
           </button>
         </div>
       </form>
+
+      <div className="d-grid mt-3">
+        <button onClick={() => navigate("/forgot_password")} className="btn btn-warning login-form">
+          Forgot Password
+        </button>
+      </div>
         
     </Container>
   )
