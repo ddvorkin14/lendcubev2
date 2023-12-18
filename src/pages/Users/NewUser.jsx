@@ -75,7 +75,7 @@ const NewUser = () => {
           <div className={loading ? Classes.SKELETON : ''}>
             <Row>
               <Col lg={5}>
-                <Form ref={formRef} onSubmit={createUser} validated={validated} noValidate>
+                <Form ref={formRef} validated={validated} noValidate>
                   <Form.Group className="mb-3" controlId="email">
                     <Form.Label style={{ float: 'left' }}>Email address</Form.Label>
                     <Form.Control required type="email" name="email" id="email" onChange={fieldUpdate} value={user?.email} />
@@ -95,10 +95,8 @@ const NewUser = () => {
                     <Form.Label style={{ float: 'left' }}>Password (randomly generated)</Form.Label>
                     <Form.Control required type="password" name="password" id="password" value={user?.password} disabled={true}/>
                   </Form.Group>
-
-                  <Button style={{width: '100%'}} variant="success" type="submit" disabled={!validated}>Create User</Button>
                 </Form>
-
+                <Button onClick={createUser} style={{width: '100%'}} variant="success" disabled={!validated}>Create User</Button>
               </Col>
             </Row>
           </div>
