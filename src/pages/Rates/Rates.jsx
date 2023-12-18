@@ -32,6 +32,9 @@ const Rates = () => {
   
   useEffect(() => {
     if(localStorage?.token?.length > 10 && reloadQuery){
+      if(localStorage?.current_user_role !== 'admin'){
+        navigate("/")
+      }
       axios.get(process.env.REACT_APP_API_URL + "rules", authHeader).then((resp) => {
         setRates(resp.data.rules);
         setLoading(false);

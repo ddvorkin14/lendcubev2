@@ -58,7 +58,11 @@ const Users = () => {
 
   useEffect(() => {
     if(localStorage?.token?.length > 5){
-      updateTable();
+      if(localStorage?.current_user_role === 'admin'){
+        updateTable();
+      } else {
+        navigate("/")
+      }
     } else {
       navigate("/login");
     }
@@ -107,9 +111,13 @@ const Users = () => {
     )
   }
 
-  const layoutActions = [
-    { id: 1, intent: 'success', label: 'Create New User', func: () => navigate("/users/new") }
-  ]
+  let layoutActions = []
+  if(localStorage.current_user_role === 'admin'){
+    layoutActions = [
+      { id: 1, intent: 'success', label: 'Create New User', func: () => navigate("/users/new") }
+    ]
+  }
+  
 
   return (
     <Layout

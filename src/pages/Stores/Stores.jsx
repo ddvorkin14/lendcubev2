@@ -33,6 +33,9 @@ const Stores = () => {
 
   useEffect(() => {
     if(localStorage.token?.length > 10 && reloadQuery){
+      if(localStorage?.current_user_role !== 'admin'){
+        navigate("/")
+      }
       axios.get(process.env.REACT_APP_API_URL + "stores", authHeader).then((resp) => {
         setStores(resp.data.stores);
         setLoading(false);
