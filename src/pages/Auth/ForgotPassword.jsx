@@ -4,18 +4,28 @@ import { Container } from "react-bootstrap";
 import axios from "axios";
 import { Position, Toaster } from "@blueprintjs/core";
 
-
 const AppToaster = Toaster.create({
   className: "recipe-toaster",
   position: Position.TOP,
   maxToasts: 3
 });
 
-const ForgotPassword = () => {
-  const [user, setUser] = useState({});
+const ForgotPassword = (props) => {
+  
   const [autoLogin, setAutoLogin] = useState(false);
   const navigate = useNavigate();
-  
+  const { first_time } = props;
+  const queryParams = new URLSearchParams(window.location.search);
+  const email = queryParams.get('email');
+  const [user, setUser] = useState({ email: email });
+  const [disabledEmail, setDisabledEmail] = useState(false);
+
+  useEffect(() => {
+    if(!!user?.email && first_time){
+      setDisabledEmail(true);
+    }
+  }, [user])
+
   useEffect(() => {
     if(!!autoLogin) {
       let { email, password } = user;
@@ -66,13 +76,15 @@ const ForgotPassword = () => {
   return (
     <Container className="pt-4 mt-4">
       <div className="login-form">
-        <h3>Forgot Password</h3>
+        <h3>{first_time ? 'Set New Password' : 'Forgot Password'}</h3>
         <div className="mb-3">
           <label style={{float: 'left'}}>Email address</label>
           <input
             type="email"
             className="form-control"
+            disabled={disabledEmail}
             placeholder="Enter email"
+            value={user?.email}
             onChange={(e) => setUser({ ...user, email: e.target.value })}
           />
         </div>

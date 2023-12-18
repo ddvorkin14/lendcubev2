@@ -107,11 +107,15 @@ const Users = () => {
     )
   }
 
+  const layoutActions = [
+    { id: 1, intent: 'success', label: 'Create New User', func: () => navigate("/users/new") }
+  ]
+
   return (
     <Layout
       showBreadcrumbs={true} 
       breadcrumbs={BREADCRUMBS}
-      actions={[]}>
+      actions={layoutActions}>
         <Card.Body>
           <div className={loadingData ? Classes.SKELETON : ''}>
             <DataTable
