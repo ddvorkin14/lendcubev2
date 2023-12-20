@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Classes, Button, Divider, Dialog, Toaster, Position } from "@blueprintjs/core";
-import { Card, Col, Container, Row, Spinner, Tabs, Tab } from "react-bootstrap";
+import { Card, Col, Container, Row, Spinner, Tabs, Tab, Alert } from "react-bootstrap";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import axios from "axios";
@@ -105,12 +105,6 @@ const Loan = () => {
     setImgModal(true);
   }
 
-  const createTransaction = () => {
-    axios.post(process.env.REACT_APP_API_URL + "loans/" + id + "/sync_zum", {}, authHeader).then((resp) => {
-      AppToaster.show({ message: "Transactions created successfully", intent: 'success' });
-    })
-  }
-
   const upload = (file, type) => {
     setUploadModal(true);
     const url = process.env.REACT_APP_API_URL + "loans/" + id + '/upload_' + type;
@@ -150,6 +144,35 @@ const Loan = () => {
     });
   }
 
+  const syncZum = () => {
+    axios.get(process.env.REACT_APP_API_URL + "loans/" + loan?.id + "/sync_zum_customer", authHeader).then((resp) => {
+      if(!!resp?.data?.loan){
+        setLoan(resp.data?.loan)
+        AppToaster.show({ message: 'Zum Customer sync successful', intent: 'success' })
+      } else {
+        AppToaster.show({ message: `Error: ${resp?.data?.msg}`, intent: 'danger' });
+      }
+    })
+  }
+
+  const syncZumTransactions = () => {
+    axios.get(process.env.REACT_APP_API_URL + "loans/" + loan?.id + "/sync_zum", authHeader).then((resp) => {
+      if(!!resp?.data?.loan){
+        setLoan(resp.data?.loan)
+        AppToaster.show({ message: 'Zum Customer Transactions sync successful', intent: 'success' })
+      } else {
+        AppToaster.show({ message: `Error: ${resp?.data?.msg}`, intent: 'danger' });
+      }
+    })
+  }
+
+  const cancel = () => {
+    axios.patch(process.env.REACT_APP_API_URL + "loans/" + loan?.id + "/update_status", { status: 'Cancelled'}, authHeader).then((resp) => {
+      AppToaster.show({ message: 'Loan cancelled successfully', intent: 'success' })
+      navigate("/loans");
+    })
+  }
+
   return (
     <Container className="pt-4 pb-4 loanInfo">
       <Tabs defaultActiveKey="details" id="main-tabs" className="mb-3">
@@ -160,27 +183,33 @@ const Loan = () => {
                 {`#0000${loan?.id}`}
               </div>
               <div style={{float: 'right'}}>
-                <Button intent="success" onClick={() => navigate(`/loans/${loan?.id}/bankdetails`) }>Add Bank Details</Button>
-                <Button intent="default" onClick={() => navigate(`/loans/${loan?.id}/edit`) } style={{marginLeft: 10}}>Edit Loan</Button>
+                <Button intent="success" onClick={() => navigate(`/loans/${loan?.id}/bankdetails`) }>Manage Bank Details</Button>
+                <Button intent="default" onClick={() => navigate(`/loans/${loan?.id}/edit`) } style={{marginLeft: 5}}>Edit Loan</Button>
                 {loan?.zum_customer_id === 'N/A' ? (
-                  <Button intent="warning" onClick={() => zumConnect()} style={{marginLeft: 10}}>Zum Connect</Button>
+                  <Button intent="warning" onClick={() => zumConnect()} style={{marginLeft: 5}}>Zum Connect</Button>
                 ) : (
-                  <Button intent="primary" onClick={() => createTransaction()} style={{marginLeft: 10}}>Create Transaction</Button>
+                  <Button intent="primary" onClick={() => syncZumTransactions()} style={{marginLeft: 5}}>Create Transaction</Button>
                 )}
-                {loan?.docusign_url?.length > 0 && !loan?.agreement_signed && bankDetailsPresent() ? (
-                  <a type="button" intent="primary" href={loan?.docusign_url} style={{marginLeft: 10}}>Sign Agreement</a>
-                ) : (
-                  <i style={{marginLeft: 10}}>{loan?.agreement_signed ? 'Agreement Signed!' : ''}</i>
+                {bankDetailsPresent() && (
+                  <Button intent="warning" style={{ marginLeft: 5 }} onClick={() => syncZum()}>ZumCustomer Sync</Button>
                 )}
-                {localStorage?.current_user_role === 'admin' && (
-                  <Button intent="danger" onClick={() => deleteLoan()} style={{marginLeft: 10}}>Destroy</Button>
+                {loan?.docusign_url?.length > 0 && !loan?.agreement_signed && bankDetailsPresent() && (
+                  <a type="button" intent="primary" href={loan?.docusign_url} style={{marginLeft: 5}}>Sign Agreement</a>
                 )}
                 {Boolean(loan?.zum_customer_id) && (
-                  <Button intent="primary" onClick={() => navigate(`/wizard/${loan?.id}`) } style={{marginLeft: 10}}>Continue Wizard</Button>  
+                  <Button intent="primary" onClick={() => navigate(`/wizard/${loan?.id}`) } style={{marginLeft: 5}}>Continue Wizard</Button>
+                )}
+                {loan?.status !== 'Cancelled' && (
+                  <Button intent="danger" onClick={cancel} style={{marginLeft: 4}}>Cancel Loan</Button>
                 )}
               </div>
             </Card.Header>
             <Card.Body>
+              {loan?.docusign_url?.length > 0 && loan?.agreement_signed && (
+                <Alert key={"success"} variant={"success"} style={{textAlign: 'left'}}>
+                  Agreement signed. <a href={loan?.docusign_url}>Docusign Agreement Download</a>
+                </Alert>
+              )}
               <Row>
                 <Col sm="3">
                   <div className={`${loading ? Classes.SKELETON : ''} money-preview`}>

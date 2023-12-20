@@ -133,8 +133,9 @@ const Loans = () => {
     { name: 'First Name', selector: row => row.first_name, sortable: true },
     { name: 'Last Name', selector: row => row.last_name, sortable: true },
     { name: 'Email', width: '240px', selector: row => row.customer_email, sortable: true },
+    { name: 'Status', width: '140px', selector: row => !!row.status ? row.status : "Active", sortable: true },
     { name: 'Amount', width: '100px', selector: row => <CurrencyFormat value={row.amount} displayType={'text'} decimalScale={2} fixedDecimalScale={true} thousandSeparator={true} prefix={'$'} />, value: row => row.amount, sortable: true },
-    { name: 'Frequency', width: '110px', selector: row => row.frequency, sortable: true },
+    { name: 'Frequency', width: '100px', selector: row => row.frequency, sortable: true },
     { name: 'Created', width: '170px', selector: row => `${Moment(row.created_at).format("L LT")}`, sortable: true },
   ];
 
