@@ -196,7 +196,7 @@ const Loan = () => {
                 {loan?.docusign_url?.length > 0 && !loan?.agreement_signed && bankDetailsPresent() && (
                   <a type="button" intent="primary" href={loan?.docusign_url} style={{marginLeft: 5}}>Sign Agreement</a>
                 )}
-                {Boolean(loan?.zum_customer_id) && (
+                {loan?.zum_customer_id?.length < 5 && !bankDetailsPresent() && (
                   <Button intent="primary" onClick={() => navigate(`/wizard/${loan?.id}`) } style={{marginLeft: 5}}>Continue Wizard</Button>
                 )}
                 {loan?.status !== 'Cancelled' && (
