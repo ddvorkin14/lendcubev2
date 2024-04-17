@@ -193,9 +193,9 @@ const Loan = () => {
                 {bankDetailsPresent() && (
                   <Button intent="warning" style={{ marginLeft: 5 }} onClick={() => syncZum()}>ZumCustomer Sync</Button>
                 )}
-                {loan?.docusign_url?.length > 0 && !loan?.agreement_signed && bankDetailsPresent() && (
+                {/* {loan?.docusign_url?.length > 0 && !loan?.agreement_signed && bankDetailsPresent() && (
                   <a type="button" intent="primary" href={loan?.docusign_url} style={{marginLeft: 5}}>Sign Agreement</a>
-                )}
+                )} */}
                 {loan?.zum_customer_id?.length < 5 && !bankDetailsPresent() && (
                   <Button intent="primary" onClick={() => navigate(`/wizard/${loan?.id}`) } style={{marginLeft: 5}}>Continue Wizard</Button>
                 )}
@@ -205,11 +205,11 @@ const Loan = () => {
               </div>
             </Card.Header>
             <Card.Body>
-              {loan?.docusign_url?.length > 0 && loan?.agreement_signed && (
+              {/* {loan?.docusign_url?.length > 0 && loan?.agreement_signed && (
                 <Alert key={"success"} variant={"success"} style={{textAlign: 'left'}}>
                   Agreement signed. <a href={loan?.docusign_url}>Docusign Agreement Download</a>
                 </Alert>
-              )}
+              )} */}
               <Row>
                 <Col sm="3">
                   <div className={`${loading ? Classes.SKELETON : ''} money-preview`}>
