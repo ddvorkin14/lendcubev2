@@ -135,7 +135,7 @@ const StepFour = (props) => {
           <Button type="button" className="previous" onClick={previousPage}>
             Go Back
           </Button>
-          <Button onClick={onSubmit} className="next" intent={"primary"}>
+          <Button onClick={onSubmit} className="next" intent={"primary"} disabled={!showCompletedAgreement}>
             Proceed
           </Button>
         </div>
